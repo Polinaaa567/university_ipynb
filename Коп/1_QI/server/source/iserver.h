@@ -8,8 +8,9 @@ using HRESULT_ = int;
 const int CLSID_Server = 1;
 
 const int IID_IUnknown_ = 0;
-const int IID_ISample_Processing = 1;
-const int IID_IPrintResult = 2;
+const int IID_IGet_Array = 1;
+const int IID_ISample_Processing = 2;
+
 
 const int S_OK_ = 0;
 const int E_NOINTERFACE_ = 1;
@@ -28,9 +29,10 @@ class ISample_Processing: public IUnknown_
 	 virtual HRESULT_ __stdcall Corrected_Sample_Variance()=0;
 };
 
-class IPrintResult : public IUnknown_ {
+class IGet_Array : public IUnknown_ {
 	public: 
-	 virtual HRESULT_ __stdcall PrintResult() = 0;
+	 virtual HRESULT_ __stdcall GetX() = 0;
+	 virtual HRESULT_ __stdcall GetN() = 0;
 };
 
 

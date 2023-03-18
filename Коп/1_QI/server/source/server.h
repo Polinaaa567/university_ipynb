@@ -3,14 +3,12 @@
 
 #include "iserver.h"
 
-class Server: public ISample_Processing, public IPrintResult {
+class Server: public ISample_Processing, public IGet_Array {
 	private:
-	 int x[5] = {-3, -2, -1, 0, 1};
-	 int n[5] = {5, 3, 2, 1, 1};
+	 int x[5];
+	 int n[5];
 	 float volume;
 	 float Sample_average;
-	 float Sample_variance;
-	 float Corrected_Sample_variance;
 	
 	public:
 	 Server();
@@ -23,7 +21,8 @@ class Server: public ISample_Processing, public IPrintResult {
 	 virtual HRESULT_ __stdcall Sample_Variance();
 	 virtual HRESULT_ __stdcall Corrected_Sample_Variance();
 
-	 virtual HRESULT_ __stdcall PrintResult();
+	 virtual HRESULT_ __stdcall GetN();
+	 virtual HRESULT_ __stdcall GetX();
 };
 
 #endif // SERVER_H_INCLUDED

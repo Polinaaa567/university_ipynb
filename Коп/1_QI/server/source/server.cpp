@@ -11,8 +11,6 @@ Server::Server()
 {
   volume = 0;
   Sample_average = 0;
-  Sample_variance = 0;
-	Corrected_Sample_variance = 0;
 
   cout << "Server::Constructor" << endl;
 }
@@ -21,6 +19,8 @@ Server::~Server()
 {
   cout << "Server::Destructor" << endl;  
 }
+
+//--------------------------------------------
 
 HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
 {
@@ -34,9 +34,9 @@ HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
    {
     *ppv = static_cast<ISample_Processing*>(this);
    }
-   else if (iid == IID_IPrintResult) {
-    *ppv = (IPrintResult*)this;
-    }
+   else if (iid == IID_IGet_Array) {
+    *ppv = (IGet_Array*)this;
+   }
    
    else {
      *ppv = NULL;
@@ -45,61 +45,88 @@ HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
    return S_OK_;
 }
 
+//--------------------------------------------
+
+HRESULT_ __stdcall Server::GetX() {
+  cout << "Server::GetX" << endl;
+  
+  fstream f;
+
+  f.open("GetX.txt");
+
+  if(f.is_open()) {
+    for (int i = 0; i < 5; i++) { 
+      f >> x[i];
+    }
+  }
+   else {
+    cout << "No file opened" << endl;
+  }
+
+  f.close();
+
+  return S_OK_;
+}
+
+HRESULT_ __stdcall Server::GetN() {
+  cout << "Server::GetN" << endl;
+  
+  fstream f;
+
+  f.open("GetN.txt");
+
+  if(f.is_open()) {
+    for (int i = 0; i < 5; i++) { 
+      f >> n[i];
+    }
+  }
+  else {
+    cout << "No file opened" << endl;
+  }
+
+  f.close();
+
+  return S_OK_;
+}
 	
+//--------------------------------------------
+
 HRESULT_ __stdcall Server::Sample_Average() 
 {
+  cout << "Server::Sample_Average" << endl;
   float sum = 0;
   for(int i = 0; i < 5; i++) {
     volume += n[i];
     sum += x[i] * n[i];
   }
   Sample_average = round(sum / volume * 100) / 100;
-  cout<< "Sample_Average = " << Sample_average << endl;
+  cout<< "Sample_Average = " << Sample_average << endl << endl;
 
   return S_OK_;
 }
 
 HRESULT_ __stdcall Server::Sample_Variance()
 {
+  cout << "Server::Sample_Variance" << endl;
   float sum = 0;
   
   for(int i=0; i< 5; i++) {
     sum += pow((x[i]- Sample_average), 2) * n[i];
   }
-  Sample_variance = round(sum / volume * 100) / 100;
-  cout << "Sample_Variance = " << Sample_variance << endl;
+  cout << "Sample_Variance = " <<  round(sum / volume * 100) / 100 << endl << endl;
 
   return S_OK_;
 }
 
 HRESULT_ __stdcall Server::Corrected_Sample_Variance()
 {
+  cout << "Server::Corrected_Sample_Variance" << endl;
   float sum = 0;
 
   for(int i=0; i< 5; i++) {
     sum += pow((x[i]- Sample_average), 2) * n[i];
   }
-  Corrected_Sample_variance = round(sum / (volume-1) * 100) / 100;
-  cout << "Corrected_Sample_Variance = " << Corrected_Sample_variance << endl;
-
-  return S_OK_;
-}
-
-HRESULT_ __stdcall Server::PrintResult() {
-  ofstream out;
-
-  out.open("C:\\Users\\ACER\\Desktop\\test.txt");
-  
-  if(out.is_open()) {
-    out << "Sample_Average = " << Sample_average << endl;
-    out << "Sample_Variance = " << Sample_variance << endl;
-    out << "Corrected_Sample_Variance = " << Corrected_Sample_variance << endl;
-    
-  }
-
-  cout << "End of program" << endl;
-
-  out.close();
+  cout << "Corrected_Sample_Variance = " << round(sum / (volume-1) * 100) / 100 << endl << endl;
 
   return S_OK_;
 }

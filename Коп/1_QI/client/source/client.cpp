@@ -9,12 +9,26 @@ int main() {
 	
 	IUnknown_* s = CreateServer(CLSID_Server);
 
-	ISample_Processing* pSP = NULL;
-	HRESULT_ res = s->QueryInterface(IID_ISample_Processing, (void **)&pSP);
 	
+	
+	IGet_Array* pGA = NULL;
+	HRESULT_ res = s->QueryInterface(IID_IGet_Array,(void**)&pGA);
 	if (res==S_OK_)
 	{
-		cout << "Client::Main::Success IX:" << endl;
+		cout << "Client::Main::Success IGet_Array: " << endl;			
+		pGA->GetN();
+		pGA->GetX();
+	}	
+	else
+    {
+	   cout << "Client::Main::Error IY: " << res << endl;			
+	}
+	
+	ISample_Processing* pSP = NULL;
+	 res = pGA->QueryInterface(IID_ISample_Processing, (void **)&pSP);
+	if (res==S_OK_)
+	{
+		cout << "Client::Main::Success ISample_Processing:" << endl;
 		pSP->Sample_Average();
 		pSP->Sample_Variance();
 		pSP->Corrected_Sample_Variance();
@@ -24,18 +38,6 @@ int main() {
 	   cout << "Client::Main::Error" << res << endl;			
 	}
 
-	IPrintResult* pPR = NULL;
-	res = pSP->QueryInterface(IID_IPrintResult,(void**)&pPR);
-	if (res==S_OK_)
-	{
-		cout << "Client::Main::Success IY: " << endl;			
-		pPR->PrintResult();
-	}	
-	else
-    {
-	   cout << "Client::Main::Error IY: " << res << endl;			
-	}
-	
 	
 	return 0;
 }
