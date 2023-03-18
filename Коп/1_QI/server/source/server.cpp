@@ -1,7 +1,9 @@
 #include "server.h"
 
 #include <iostream>
+#include <fstream>
 #include <math.h>
+
 using namespace std;
 
 
@@ -9,6 +11,8 @@ Server::Server()
 {
   volume = 0;
   Sample_average = 0;
+  Sample_variance = 0;
+	Corrected_Sample_variance = 0;
 
   cout << "Server::Constructor" << endl;
 }
@@ -24,15 +28,17 @@ HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
 
    if (iid==IID_IUnknown_)
    {
-     *ppv = (IUnknown_*)(ISample_Processing*)this;
+    *ppv = (IUnknown_*)(ISample_Processing*)this;
    }
    else if (iid == IID_ISample_Processing)
    {
-     *ppv = static_cast<ISample_Processing*>(this);
+    *ppv = static_cast<ISample_Processing*>(this);
    }
+   else if (iid == IID_IPrintResult) {
+    *ppv = (IPrintResult*)this;
+    }
    
-   else
-   {
+   else {
      *ppv = NULL;
      return E_NOINTERFACE_;
    }
@@ -60,8 +66,8 @@ HRESULT_ __stdcall Server::Sample_Variance()
   for(int i=0; i< 5; i++) {
     sum += pow((x[i]- Sample_average), 2) * n[i];
   }
-
-  cout << "Sample_Variance: " << round(sum / volume * 100) / 100 << endl;
+  Sample_variance = round(sum / volume * 100) / 100;
+  cout << "Sample_Variance = " << Sample_variance << endl;
 
   return S_OK_;
 }
@@ -73,8 +79,27 @@ HRESULT_ __stdcall Server::Corrected_Sample_Variance()
   for(int i=0; i< 5; i++) {
     sum += pow((x[i]- Sample_average), 2) * n[i];
   }
+  Corrected_Sample_variance = round(sum / (volume-1) * 100) / 100;
+  cout << "Corrected_Sample_Variance = " << Corrected_Sample_variance << endl;
 
-  cout << "Corrected_Sample_Variance: " << round(sum / (volume-1) * 100) / 100 << endl;
+  return S_OK_;
+}
+
+HRESULT_ __stdcall Server::PrintResult() {
+  ofstream out;
+
+  out.open("C:\\Users\\ACER\\Desktop\\test.txt");
+  
+  if(out.is_open()) {
+    out << "Sample_Average = " << Sample_average << endl;
+    out << "Sample_Variance = " << Sample_variance << endl;
+    out << "Corrected_Sample_Variance = " << Corrected_Sample_variance << endl;
+    
+  }
+
+  cout << "End of program" << endl;
+
+  out.close();
 
   return S_OK_;
 }

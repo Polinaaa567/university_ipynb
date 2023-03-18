@@ -11,6 +11,7 @@ int main() {
 
 	ISample_Processing* pSP = NULL;
 	HRESULT_ res = s->QueryInterface(IID_ISample_Processing, (void **)&pSP);
+	
 	if (res==S_OK_)
 	{
 		cout << "Client::Main::Success IX:" << endl;
@@ -21,6 +22,18 @@ int main() {
 	else
     {
 	   cout << "Client::Main::Error" << res << endl;			
+	}
+
+	IPrintResult* pPR = NULL;
+	res = pSP->QueryInterface(IID_IPrintResult,(void**)&pPR);
+	if (res==S_OK_)
+	{
+		cout << "Client::Main::Success IY: " << endl;			
+		pPR->PrintResult();
+	}	
+	else
+    {
+	   cout << "Client::Main::Error IY: " << res << endl;			
 	}
 	
 	
