@@ -4,7 +4,7 @@
 #include "iserver.h"
 
 class Server: public ISample_Processing, public IGet_Array {
-	private:
+	private: //обработка выборки
 	 int x[5];
 	 int n[5];
 	 float volume;

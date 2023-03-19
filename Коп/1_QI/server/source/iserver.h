@@ -24,9 +24,9 @@ class IUnknown_
 class ISample_Processing: public IUnknown_
 {
 	public:
-	 virtual HRESULT_ __stdcall Sample_Average()=0;
-	 virtual HRESULT_ __stdcall Sample_Variance()=0;
-	 virtual HRESULT_ __stdcall Corrected_Sample_Variance()=0;
+	 virtual HRESULT_ __stdcall Sample_Average()=0;  //выборочное среднее
+	 virtual HRESULT_ __stdcall Sample_Variance()=0; //выборочная дисперсия
+	 virtual HRESULT_ __stdcall Corrected_Sample_Variance()=0; //исправленная выборочная дисперсия 
 };
 
 class IGet_Array : public IUnknown_ {
