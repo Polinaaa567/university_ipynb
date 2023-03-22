@@ -21,8 +21,19 @@ class Server: public ISample_Processing, public IGet_Array {
 	 virtual HRESULT_ __stdcall Sample_Variance();
 	 virtual HRESULT_ __stdcall Corrected_Sample_Variance();
 
-	 virtual HRESULT_ __stdcall GetN();
-	 virtual HRESULT_ __stdcall GetX();
+	 virtual HRESULT_ __stdcall InputMas1(); //n
+	 virtual HRESULT_ __stdcall InputMas2(); //x
+};
+
+class ServerFactory: public IClassFactory_ {
+    public:
+	 ServerFactory();
+	 ~ServerFactory();
+
+
+	 virtual HRESULT_ __stdcall QueryInterface(const IID_& iid, void** ppv);
+
+	 virtual HRESULT_ __stdcall CreateInstance(const IID_& iid, void** ppv);
 };
 
 #endif // SERVER_H_INCLUDED
