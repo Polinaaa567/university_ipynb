@@ -1,3 +1,4 @@
+//хрень какая-то 
 class Clock { 
     constructor(template) { 
         this.template = template; 
