@@ -6,3 +6,4 @@ def square_fibonacci(n):
 
 
 print(*square_fibonacci(7))
+print('all')
