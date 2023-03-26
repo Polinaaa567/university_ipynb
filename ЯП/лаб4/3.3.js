@@ -37,16 +37,15 @@ class Clock {
 class ExtendedClock extends Clock {
     constructor(fdate) {
         super(fdate);
-        this.precision = precision;
+      let { precision = 1000 } = fdate;
+      this.precision = precision;
     }
-
+  
     start() {
-        this.render(); 
-        this.timer = setInterval(() => this.render(), 1000); 
-    } 
-}
+      this.render();
+      this.timer = setInterval(() => this.render(), this.precision);
+    }
+  };
 
-let clock = new ExtendedClock("h m s"); 
-
-clock.start();
-
+  let clock = new Clock("h m s"); 
+  clock.start();

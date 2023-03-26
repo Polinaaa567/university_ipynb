@@ -8,4 +8,6 @@ let rabbit = {
     __proto__: animal, 
 }; 
  //rabbit
-console.log(rabbit.eat());
+rabbit.eat();
+console.log(rabbit.full);
+console.log(animal.full);
