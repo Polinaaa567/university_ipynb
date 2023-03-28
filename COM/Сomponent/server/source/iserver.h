@@ -4,6 +4,7 @@
 using CLSID_ = int;
 using IID_ = int;
 using HRESULT_ = int;
+using ULONG_ = int;
 
 const int CLSID_Server = 1;
 
@@ -21,6 +22,8 @@ class IUnknown_
 {
     public:	
      virtual HRESULT_ __stdcall QueryInterface(const IID_& iid, void** ppv)=0;
+	 virtual ULONG_ __stdcall AddRef()=0;
+	 virtual ULONG_ __stdcall Release()=0;
 }; 
 
 class ISample_Processing: public IUnknown_
@@ -40,6 +43,8 @@ class IGet_Array : public IUnknown_ {
 class IClassFactory_: public IUnknown_ { //100
    public:
 	virtual HRESULT_ __stdcall CreateInstance(const IID_& iid, void** ppv) = 0;
+	virtual ULONG_ __stdcall AddRef()=0;
+	virtual ULONG_ __stdcall Release()=0;
 };
 
  HRESULT_ __stdcall CreateInstance(const CLSID_& clsid, const IID_& iid, void** ppv);

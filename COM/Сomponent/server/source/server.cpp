@@ -9,6 +9,8 @@ using namespace std;
 
 Server::Server() 
 {
+  fRefCount = 0;
+
   volume = 0;
   Sample_average = 0;
 
@@ -42,7 +44,31 @@ HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
      *ppv = NULL;
      return E_NOINTERFACE_;
    }
+   this->AddRef();
    return S_OK_;
+}
+
+ULONG_ __stdcall Server::AddRef()
+{
+   cout << "Server::AddRef" << endl;
+   fRefCount++;
+   cout << "Current references: " << fRefCount << endl;
+   return fRefCount;
+}
+
+
+ULONG_ __stdcall Server::Release()
+{
+   cout << "Server::Relese" << endl;
+   fRefCount--;
+   cout << "Current references: " << fRefCount << endl;
+   if (fRefCount==0)
+   {
+     cout << "Self-destructing..." << endl;
+     delete this;
+     cout << "Self-destructing...OK" << endl;
+   }
+   return fRefCount;
 }
 
 //--------------------------------------------
@@ -138,6 +164,7 @@ HRESULT_ __stdcall Server::Corrected_Sample_Variance()
 ServerFactory::ServerFactory() 
 {
    cout << "ServerFactory::Constructor" << endl; 
+   fRefCount = 0;
 }
 
 ServerFactory::~ServerFactory() 
@@ -171,4 +198,28 @@ HRESULT_  __stdcall ServerFactory::CreateInstance(const IID_& iid, void** ppv)
 {
    Server* p = new Server();
    return p->QueryInterface(iid,ppv);
+   p->Release();
+}
+
+ULONG_ __stdcall ServerFactory::AddRef()
+{
+   cout << "Server::AddRef" << endl;
+   fRefCount++;
+   cout << "Current references: " << fRefCount << endl;
+   return fRefCount;
+}
+
+
+ULONG_ __stdcall ServerFactory::Release()
+{
+   cout << "Server::Relese" << endl;
+   fRefCount--;
+   cout << "Current references: " << fRefCount << endl;
+   if (fRefCount==0)
+   {
+     cout << "Self-destructing..." << endl;
+     delete this;
+     cout << "Self-destructing...OK" << endl;
+   }
+   return fRefCount;
 }

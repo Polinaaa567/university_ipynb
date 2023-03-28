@@ -5,6 +5,8 @@
 
 class Server: public ISample_Processing, public IGet_Array {
 	private: //обработка выборки
+	  int fRefCount;
+	 
 	 int x[5];
 	 int n[5];
 	 float volume;
@@ -16,6 +18,9 @@ class Server: public ISample_Processing, public IGet_Array {
 
 
 	 virtual HRESULT_ __stdcall QueryInterface(const IID_& iid, void** ppv);
+	 virtual ULONG_ __stdcall AddRef();
+	 virtual ULONG_ __stdcall Release();
+
 
 	 virtual HRESULT_ __stdcall Sample_Average();
 	 virtual HRESULT_ __stdcall Sample_Variance();
@@ -26,11 +31,13 @@ class Server: public ISample_Processing, public IGet_Array {
 };
 
 class ServerFactory: public IClassFactory_ {
-    public:
+    int fRefCount;
+	public:
 	 ServerFactory();
 	 ~ServerFactory();
 
-
+	 virtual ULONG_ __stdcall AddRef();
+	 virtual ULONG_ __stdcall Release();
 	 virtual HRESULT_ __stdcall QueryInterface(const IID_& iid, void** ppv);
 
 	 virtual HRESULT_ __stdcall CreateInstance(const IID_& iid, void** ppv);

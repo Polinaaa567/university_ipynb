@@ -13,7 +13,7 @@ HRESULT_ __stdcall CreateInstance(const CLSID_& clsid, const IID_& iid, void** p
    if (res == S_OK_)
    {
       res = pf->CreateInstance(iid,ppv);
-      //pf->Release();
+      pf->Release();
    } 
    return res;
 }   

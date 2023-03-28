@@ -30,6 +30,7 @@ int main() {
 	
 	ISample_Processing* pSP = NULL;
 	 res = pGA->QueryInterface(IID_ISample_Processing, (void **)&pSP);
+	pGA->Release();
 	if (res==S_OK_)
 	{
 		cout << "Client::Main::Success ISample_Processing:" << endl;
@@ -42,7 +43,7 @@ int main() {
 	   cout << "Client::Main::Error query IID_ISample_Processing" << res << endl;	
 	   return 0;		
 	}
-
+	pSP->Release();
 	
 	return 0;
 }
