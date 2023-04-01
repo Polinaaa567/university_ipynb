@@ -14,6 +14,7 @@ class Server: public ISample_Processing, public IGet_Array {
 	
 	public:
 	 Server();
+	 Server(int n, int x) ;
 	 ~Server();
 
 
@@ -30,7 +31,7 @@ class Server: public ISample_Processing, public IGet_Array {
 	 virtual HRESULT_ __stdcall InputMas2(); //x
 };
 
-class ServerFactory: public IClassFactory_ {
+class ServerFactory: public IClassFactory_, public IMyClassFactory_ {
     int fRefCount;
 	public:
 	 ServerFactory();
@@ -39,8 +40,14 @@ class ServerFactory: public IClassFactory_ {
 	 virtual ULONG_ __stdcall AddRef();
 	 virtual ULONG_ __stdcall Release();
 	 virtual HRESULT_ __stdcall QueryInterface(const IID_& iid, void** ppv);
-
 	 virtual HRESULT_ __stdcall CreateInstance(const IID_& iid, void** ppv);
+	 virtual HRESULT_ __stdcall CreateServer(const IID_& iid, void** ppv, int n, int x);
 };
+
+class ServerFactory2: public IMyClassFactory_{
+
+};
+
+
 
 #endif // SERVER_H_INCLUDED

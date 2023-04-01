@@ -22,7 +22,13 @@ Server::~Server()
   cout << "Server::Destructor" << endl;  
 }
 
-//--------------------------------------------
+Server::Server(int n, int x) 
+{
+  cout << "Server::Constructor(a,b)" << endl;
+  this->n[5] = n;
+  this->x[5] = x;
+  fRefCount = 0;
+}
 
 HRESULT_ __stdcall Server::QueryInterface(const IID_& iid, void** ppv)
 {
@@ -114,8 +120,7 @@ HRESULT_ __stdcall Server::InputMas1() {
 
   return S_OK_;
 }
-	
-//--------------------------------------------
+
 
 HRESULT_ __stdcall Server::Sample_Average() 
 {
@@ -164,6 +169,7 @@ HRESULT_ __stdcall Server::Corrected_Sample_Variance()
 ServerFactory::ServerFactory() 
 {
    cout << "ServerFactory::Constructor" << endl; 
+   
    fRefCount = 0;
 }
 
@@ -172,7 +178,6 @@ ServerFactory::~ServerFactory()
   cout << "ServerFactory::Destructor" << endl;  
 }
 
-//--------------------------------------------
 
 HRESULT_ __stdcall ServerFactory::QueryInterface(const IID_& iid, void** ppv)
 {
@@ -186,33 +191,31 @@ HRESULT_ __stdcall ServerFactory::QueryInterface(const IID_& iid, void** ppv)
    {
     *ppv = (void**)(IClassFactory_*)(this);
    }
+   else if (iid==IID_IMyClassFactory_)
+   {
+     *ppv = static_cast<IMyClassFactory_*>(this);
+   } 
    else {
      *ppv = NULL;
      return E_NOINTERFACE_;
    }
-
+   this->AddRef();
    return S_OK_;
 }
 
-HRESULT_  __stdcall ServerFactory::CreateInstance(const IID_& iid, void** ppv)
-{
-   Server* p = new Server();
-   return p->QueryInterface(iid,ppv);
-   p->Release();
-}
+
 
 ULONG_ __stdcall ServerFactory::AddRef()
 {
-   cout << "Server::AddRef" << endl;
+   cout << "ServerFactory::AddRef" << endl;
    fRefCount++;
    cout << "Current references: " << fRefCount << endl;
    return fRefCount;
 }
 
-
 ULONG_ __stdcall ServerFactory::Release()
 {
-   cout << "Server::Relese" << endl;
+   cout << "ServerFactory::Relese" << endl;
    fRefCount--;
    cout << "Current references: " << fRefCount << endl;
    if (fRefCount==0)
@@ -222,4 +225,24 @@ ULONG_ __stdcall ServerFactory::Release()
      cout << "Self-destructing...OK" << endl;
    }
    return fRefCount;
+}
+
+HRESULT_  __stdcall ServerFactory::CreateInstance(const IID_& iid, void** ppv)
+{
+   cout << "ServerFactory::CreateInstance" << endl;
+   Server* p = new Server();
+   p->AddRef();
+   HRESULT_ res = p->QueryInterface(iid,ppv);
+   p->Release();
+   return res;
+}
+
+HRESULT_ __stdcall ServerFactory::CreateServer(const IID_& iid, void** ppv, int n, int x)
+{	 	    		
+  cout << "ServerFactory::CreateServer" << endl;
+  Server* s = new Server(n, x); 
+  s->AddRef();
+  HRESULT_ res =  s->QueryInterface(iid,ppv);
+  s->Release();  
+  return res;  
 }
