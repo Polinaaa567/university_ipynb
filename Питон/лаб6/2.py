@@ -1,5 +1,3 @@
-# 2
-
 class Balance:
     def __init__(self):
         self.number_left = 0

@@ -1,6 +1,6 @@
-# 1
 class BigBell:
     zvuc = 0
+
     def sound(self):
         if not self.zvuc:
             print('ding')
@@ -10,8 +10,7 @@ class BigBell:
             self.zvuc = 0
 
 
-
-bell =BigBell()
+bell = BigBell()
 bell.sound()
 bell.sound()
 bell.sound()

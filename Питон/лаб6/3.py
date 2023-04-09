@@ -1,4 +1,3 @@
-# 3
 class Selector:
     def __init__(self, value):
         self.value = value
@@ -15,7 +14,6 @@ class Selector:
         for i in self.value:
             if i % 2 == 0:
                 evens.append(i)
-
         return evens
 
 

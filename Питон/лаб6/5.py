@@ -1,5 +1,3 @@
-# 5
-
 class ReversedList:
     def __init__(self, lst):
         self.lst = lst[::-1]
@@ -22,5 +20,3 @@ print(f'r2 len = {len(r2)}')
 r3 = ReversedList([10])
 print(f'r3 len = {len(r3)}')
 print(r3[0])
-
-

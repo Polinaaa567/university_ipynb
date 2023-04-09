@@ -1,5 +1,3 @@
-# 9
-
 class Triangle:
     def __init__(self, ab, bc, ca):
         self.ab = ab
@@ -20,4 +18,3 @@ print(tr.perimeter())
 
 tr2 = Triangle(1, 2, 3)
 print(tr2.perimeter())
-
