@@ -1,21 +1,79 @@
-function f3() {
-    return new Promise((resolve, reject) => {
+let summ = function(value) {
+    return new Promise(function(resolve, reject) {    
         setTimeout(() => {
-            const ass = {
-                a: 5,
-                b: 10,
-                Summ() {
-                    return this.a + this.b
-                }
-            }
-            console.log(`Промежуточный результат ${ass}`)
-            resolve(ass)
-        }, 2000)
+            (typeof value[0] === 'number' && typeof value[1] === 'number') ? resolve([value[0] + value[1], value[1], value[2] + 1]) : reject('Error');
+        }, 2000);
     })
-}
+};
 
+summ([4, 5, 0]).then(
+    response => {
+        console.log(response[0], response[2]);
+        return summ([response[0], 8, response[2]])
+    } 
+    
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 15,response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 2, response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 36, response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 4, response[2]])
+    }
+).catch(
+    response => {
+        console.log(response);
+    }
+)
 
-console.log('start')
-f3(5, 6).
-then((b)=>f3(b))
-console.log('end')
+summ([4, '5', 0]).then(
+    response => {
+        console.log(response[0], response[2]);
+        return summ([response[0], 8, response[2]])
+    } 
+    
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 15,response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 2, response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 36, response[2]])
+    }
+).then(
+    response => {
+        
+        console.log(response[0], response[2]);
+        return summ([response[0], 4, response[2]])
+    }
+).catch(
+    response => {
+        console.log(response);
+    }
+)
