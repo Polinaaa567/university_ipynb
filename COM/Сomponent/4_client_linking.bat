@@ -1,1 +1,0 @@
-g++ ./client/build/client.o ./client/build/lib/manager.o ./client/build/lib/server.o    -o ./client/build/client.exe
