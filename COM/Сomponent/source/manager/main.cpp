@@ -15,6 +15,8 @@ extern "C" __declspec(dllexport) HRESULT GetClassObject(const CLSID& clsid, cons
 
       h=LoadLibrary("./build/server/main.dll");
 
+      
+
       if (!h)
       {
         printf("!\n");
@@ -35,6 +37,8 @@ extern "C" __declspec(dllexport) HRESULT GetClassObject(const CLSID& clsid, cons
         return E_UNEXPECTED;
     }
 }
+
+
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {

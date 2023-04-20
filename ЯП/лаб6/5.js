@@ -35,12 +35,10 @@
 //     await true
 //     // Вызов функций
 //     console.log('start')
-//     const readc = await readConfig('myConfig');
-//     const doQ = await doQuery('select * from cities')
-//     const httpG = await httpGet('http://google.com')
-//     const readf = await readFile('README.md')
-    
-    
+//     await readConfig('myConfig');
+//     await doQuery('select * from cities')
+//     await httpGet('http://google.com')
+//     await readFile('README.md')    
 //     console.log('end')    
 // }
 
@@ -118,88 +116,35 @@
 //     const newRes2 = await f3(NewRes)
 //     const newRes3 = await f4(newRes2)
 //     const newRes4 = await f5(newRes3)
-//     const newRes5 = await f6(newRes4)
+//     await f6(newRes4)
 //     console.log('end')    
 // }
 
 // Await()
 
-let summ = function(value) {
-    return new Promise(function(resolve, reject) {    
-        setTimeout(() => {
-            (typeof value[0] === 'number' && typeof value[1] === 'number') ? resolve([value[0] + value[1], value[1], value[2] + 1]) : reject('Error');
-        }, 2000);
-    })
+
+const summ = async (value) => {
+    let res = [...value];
+    if (typeof res[0] !== 'number' || typeof res[1] !== 'number' || !Array.isArray(value) || value.length !== 3) {
+        throw "Error";
+    }
+    res = [res[0] + res[1], res[1], res[2] + 1];
+    return res;
 };
 
-summ([4, 5, 0]).then(
-    response => {
-        console.log(response[0], response[2]);
-        return summ([response[0], 8, response[2]])
-    } 
-    
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 15,response[2]])
-    }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 2, response[2]])
-    }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 36, response[2]])
-    }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 4, response[2]])
-    }
-).catch(
-    response => {
-        console.log(response);
-    }
-)
 
-summ([4, '5', 0]).then(
-    response => {
-        console.log(response[0], response[2]);
-        return summ([response[0], 8, response[2]])
-    } 
-    
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 15,response[2]])
+let res = [4, 5, 0];
+let count = 0;
+const interval = setInterval(async () => {
+    try {
+        res = await summ(res);
+        console.log(res[0], res[2]);
+        count++;
+        if (count === 5) {
+            clearInterval(interval);
+        }
+    } catch (error) {
+        console.log(error);
+        clearInterval(interval);
     }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 2, response[2]])
-    }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 36, response[2]])
-    }
-).then(
-    response => {
-        
-        console.log(response[0], response[2]);
-        return summ([response[0], 4, response[2]])
-    }
-).catch(
-    response => {
-        console.log(response);
-    }
-)
+}, 2000);
