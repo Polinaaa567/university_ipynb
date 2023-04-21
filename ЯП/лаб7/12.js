@@ -5,7 +5,7 @@ function func () {
 }
     
 function func1() {
-    return new Date().getMonth()
+    return new Date().getMonth() + 1
 }
 
 function func2() {
