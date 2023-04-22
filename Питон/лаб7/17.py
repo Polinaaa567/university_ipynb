@@ -7,4 +7,3 @@ with open('what.csv') as file:
         New_price = int(line_dict['New price'])
         if Old_price > New_price:
             print(f'{line_dict["Name"]}')
-            

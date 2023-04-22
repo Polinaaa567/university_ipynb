@@ -1,8 +1,8 @@
 import timeit
 import numpy as np
 
-arr_1 = np.random.randint(0, 10, (3, 3))
-arr_2 = np.random.randint(0, 10, (3, 3))
+arr_1 = np.random.randint(0, 10, (100, 100))
+arr_2 = np.random.randint(0, 10, (100, 100))
 
 
 def mult():
@@ -20,12 +20,12 @@ def el_mult():
     arr_3 = [[0 for i in range(n)] for i in range(n)]
     for i in range(n):
         for j in range(n):
-                arr_3[i][j] = arr_1[i][j] * arr_2[i][j]
+            arr_3[i][j] = arr_1[i][j] * arr_2[i][j]
     return arr_3
 
 
 def np_mult():
-    return arr_1@arr_2
+    return arr_1 @ arr_2
 
 
 def np_el_mult():
@@ -34,18 +34,16 @@ def np_el_mult():
 
 start_time = timeit.default_timer()
 mult()
-print(timeit.default_timer() - start_time)
+print('mult()', timeit.default_timer() - start_time)
 
 start_time = timeit.default_timer()
 np_mult()
-print(timeit.default_timer() - start_time)
+print('np_mult()', timeit.default_timer() - start_time)
 
 start_time = timeit.default_timer()
 el_mult()
-print(timeit.default_timer() - start_time)
+print('el_mult()', timeit.default_timer() - start_time)
 
 start_time = timeit.default_timer()
 np_el_mult()
-print(timeit.default_timer() - start_time)
-
-del start_time
+print('np_el_mult()', timeit.default_timer() - start_time)

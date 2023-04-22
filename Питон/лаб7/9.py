@@ -6,4 +6,3 @@ I = np.eye(3)
 lymbda = 0.1
 
 print(np.linalg.inv(np.transpose(X) @ X + lymbda * I) @ np.transpose(X) @ y)
-

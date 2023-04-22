@@ -6,4 +6,3 @@ b = np.ones((12, 1))
 c = a * b
 
 print(c.shape)
-print(c)
