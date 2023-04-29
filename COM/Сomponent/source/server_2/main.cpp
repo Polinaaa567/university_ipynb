@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "Components_2.h"
+#include "Components.h"
 
 extern "C" __declspec(dllexport) HRESULT __stdcall DllGetClassObject(const CLSID& clsid, const IID& iid, void** ppv)
 {

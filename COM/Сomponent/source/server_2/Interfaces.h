@@ -1,5 +1,5 @@
-#ifndef Interfaces_2_H_INCLUDED
-#define Interfaces_2_H_INCLUDED
+#ifndef Interfaces_H_INCLUDED
+#define Interfaces_H_INCLUDED
 
 #include <windows.h>
 

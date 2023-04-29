@@ -1,24 +1,21 @@
-#ifndef SERVER_H_2_INCLUDED
-#define SERVER_H_2_INCLUDED
+#ifndef SERVER_H_INCLUDED
+#define SERVER_H_INCLUDED
 
-#include "interfaces_2.h"
+#include "interfaces.h"
 
 
 //компонент
 class Server_2: public ISumm {
 	private: 
-	  int fRefCount;
-	 
-	 int a;
-     int b;
+	 int fRefCount;
+	 ISumm* isum;
 
 	public:
 	 Server_2();
 	 ~Server_2();
 
     virtual void __stdcall summa();
-
-
+	
 	 virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
 	 virtual ULONG __stdcall AddRef();
 	 virtual ULONG __stdcall Release();

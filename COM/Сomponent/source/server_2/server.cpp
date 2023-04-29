@@ -1,10 +1,11 @@
-#include "server_2.h"
+#include "server.h"
 
+#include <objbase.h>
 #include <iostream>
 #include <fstream>
 #include <math.h>
 
-#include "Components_2.h"
+#include "Components.h"
 
 using namespace std;
 
@@ -13,15 +14,38 @@ Server_2::Server_2()
 {
   fRefCount = 0;
 
-  a = 5;
-  b = 7;
-
   println("Server_2::Constructor");
+
+  HINSTANCE h;
+  h=LoadLibrary("./build/manager/main.dll");
+  if (!h)
+  {
+     throw "No manager";
+  }
+  typedef HRESULT __stdcall (*CreateInstanceType) (const CLSID& clsid, IUnknown* pUnknownOuter, const IID& iid, void** ppv);
+  CreateInstanceType CreateInstance = (CreateInstanceType) GetProcAddress(h,"CreateInstance");
+  if (!CreateInstance)
+  {
+     throw "No manager method";
+  }
+  //Getting manager method (End)
+  
+  //{91A42CAA-2577-4E80-934E-07DE64502FD6}
+  const CLSID CLSID_Simple = {0x91A42CAA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
+
+  HRESULT resX = CreateInstance(CLSID_Simple,NULL,IID_Summ,(void**)&isum);
+  if (!(SUCCEEDED(resX)))  
+  {
+    throw "";
+  }    
+  //Injecting component (End)
 }
 
 Server_2::~Server_2() 
 {
   println( "Server_2::Destructor");  
+  isum->Release();
+
 }
 
 HRESULT __stdcall Server_2::QueryInterface(const IID& iid, void** ppv)
@@ -32,7 +56,10 @@ HRESULT __stdcall Server_2::QueryInterface(const IID& iid, void** ppv)
    {
     *ppv = (IUnknown*)(ISumm*)this;
    }
-   
+   else if (iid==IID_Summ)
+   {
+      *ppv = (ISumm*)this;
+   }
    else {
      *ppv = NULL;
      return E_NOINTERFACE;
@@ -67,8 +94,8 @@ ULONG __stdcall Server_2::Release()
 //методы компонента
 
 void __stdcall Server_2::summa() {
-  println("Server::InputMas2");
-  cout << a + b << endl;
+  println(":Full delegating to the simple component");
+  isum->Corrected_Sample_Variance();
 }
 
 //******************************************************************************************
