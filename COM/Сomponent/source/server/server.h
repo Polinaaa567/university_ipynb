@@ -16,7 +16,6 @@ class Server: public ISample_Processing, public IGet_Array {
 	
 	public:
 	 Server();
-	 Server(int n, int x) ;
 	 ~Server();
 
 

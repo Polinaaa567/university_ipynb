@@ -6,14 +6,13 @@
 #include <iostream>
 using namespace std;
 
-typedef HRESULT __stdcall (*GetClassObjectType) (const CLSID& clsid, const IID& iid, void** ppv);
-
 const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
 
-const CLSID CLSID_Server_2 = {0x91A42CBB,0x2572,0x4E80,{0x91,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
+const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
+typedef HRESULT __stdcall (*GetClassObjectType) (const CLSID& clsid, const IID& iid, void** ppv);
 
-int main() { //IMyClassFactory_ = //IServerFactory
+int main() { 
 	printf("Client::Main::Start");	
 
 	printf("Client::Main::GetClassObject CServer&IClassFactory_" );					
@@ -35,7 +34,7 @@ int main() { //IMyClassFactory_ = //IServerFactory
 		
 		IClassFactory* pCF = NULL;
       	
-		HRESULT resFactory = GetClassObject(CLSID_Server,IID_IClassFactory,(void**)&pCF);
+		HRESULT resFactory = GetClassObject(CLSID_Server_2,IID_IClassFactory,(void**)&pCF);
       
       	if (!(SUCCEEDED(resFactory))) {
          	throw "No factoty";
@@ -60,10 +59,17 @@ int main() { //IMyClassFactory_ = //IServerFactory
           throw "No query";
       	}
 
+		ISumma* is = NULL;
+		resQuery = pGA->QueryInterface(IID_ISumma,(void**)&is);
+		if (!(SUCCEEDED(resQuery))) {
+			throw "No query";
+		}
+
 		cout << "Client::Main::Success ISample_Processing:" << endl;
 		pSP->Sample_Average();
 		pSP->Sample_Variance();
 		pSP->Corrected_Sample_Variance();
+		is->summ();
 
 		ISample_Processing* pSP2 = pSP;
 		pSP2->AddRef();
@@ -72,9 +78,15 @@ int main() { //IMyClassFactory_ = //IServerFactory
 		pSP2->Corrected_Sample_Variance();
       	pSP2->Release();
 
-		pGA->Release();
+		ISumma* is2 = is;
+		is2->AddRef();
+		is2->summ();
+		is2->Release();
+
 		pSP->Release();
-        pCF->Release();      
+		pGA->Release(); 
+		is->Release(); 
+		pCF->Release();    
 	}
 	catch (const char* str) {
         printf("Main::Error: ");

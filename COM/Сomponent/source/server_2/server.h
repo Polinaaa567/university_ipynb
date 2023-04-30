@@ -2,19 +2,32 @@
 #define SERVER_H_INCLUDED
 
 #include "interfaces.h"
+#include "Components.h"
+#include <stdio.h>
 
+#include <objbase.h>
 
 //компонент
-class Server_2: public ISumm {
+class Server_2: public ISample_Processing, IGet_Array, ISumma  {
 	private: 
+	int a;
+	int b;
 	 int fRefCount;
-	 ISumm* isum;
+	 
+	 IGet_Array* ig_Simple;
+	 ISample_Processing* is_Simple;
 
 	public:
-	 Server_2();
-	 ~Server_2();
 
-    virtual void __stdcall summa();
+	 Server_2();
+	 virtual ~Server_2();
+
+	 virtual void __stdcall InputMas2();
+	 virtual void __stdcall InputMas1();
+	 virtual void __stdcall Sample_Average();  //выборочное среднее
+	 virtual void __stdcall Sample_Variance(); //выборочная дисперсия
+	 virtual void __stdcall Corrected_Sample_Variance(); //исправленная выборочная дисперсия 
+	 virtual void __stdcall summ();
 	
 	 virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
 	 virtual ULONG __stdcall AddRef();

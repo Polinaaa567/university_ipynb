@@ -24,14 +24,6 @@ Server::~Server()
   println( "Server::Destructor");  
 }
 
-Server::Server(int n, int x) 
-{
-  println("Server::Constructor(a,b)");
-  this->n[5] = n;
-  this->x[5] = x;
-  fRefCount = 0;
-}
-
 HRESULT __stdcall Server::QueryInterface(const IID& iid, void** ppv)
 {
    println("Server::QueryInterface");
@@ -70,12 +62,7 @@ ULONG __stdcall Server::Release()
    println("Server::Relese");
    fRefCount--;
    cout << "Current references: " << fRefCount << endl;
-   if (fRefCount==0)
-   {
-     println("Self-destructing...");
-     delete this;
-     println("Self-destructing...OK");
-   }
+   if (fRefCount==0) {delete this;}
    return fRefCount;
 }
 
@@ -196,8 +183,6 @@ HRESULT __stdcall ServerFactory::QueryInterface(const IID& iid, void** ppv)
    return S_OK;
 }
 
-
-
 ULONG __stdcall ServerFactory::AddRef()
 {
    println("ServerFactory::AddRef");
@@ -211,12 +196,7 @@ ULONG __stdcall ServerFactory::Release()
    println("ServerFactory::Relese");
    fRefCount--;
    cout << "Current references: " << fRefCount << endl;
-   if (fRefCount==0)
-   {
-     println("Self-destructing...");
-     delete this;
-     println("Self-destructing...OK");
-   }
+   if (fRefCount==0) { delete this;}
    return fRefCount;
 }
 
@@ -229,10 +209,7 @@ HRESULT  __stdcall ServerFactory::CreateInstance(IUnknown* pUnknownOuter, const 
    }
    
    Server* p = new Server();
-   p->AddRef();
-   HRESULT res = p->QueryInterface(iid,ppv);
-   p->Release();
-   return res;
+   return p->QueryInterface(iid,ppv);
 }
 
 HRESULT __stdcall ServerFactory::LockServer(BOOL bLock)
@@ -240,7 +217,6 @@ HRESULT __stdcall ServerFactory::LockServer(BOOL bLock)
   println("ServerFactory::LockServer");
   return S_OK;
 }
-
 
 void println(const char* str)
 {
@@ -263,5 +239,4 @@ HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv)
      *ppv = NULL;
      return E_NOTIMPL;
    }
-
 }
