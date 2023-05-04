@@ -1,0 +1,1 @@
+document.write(9 - Date.getMonth() + 1)

@@ -6,35 +6,37 @@
 #include <iostream>
 using namespace std;
 
-const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
 
-const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
-
-typedef HRESULT __stdcall (*GetClassObjectType) (const CLSID& clsid, const IID& iid, void** ppv);
+// typedef HRESULT __stdcall (*GetClassObjectType) (const CLSID& clsid, const IID& iid, void** ppv);
 
 int main() { 
 	printf("Client::Main::Start");	
 
 	printf("Client::Main::GetClassObject CServer&IClassFactory_" );					
 	try{
-		GetClassObjectType GetClassObject;
+		// GetClassObjectType GetClassObject;
 
-		HINSTANCE h;
+		// HINSTANCE h;
 
-		h = LoadLibrary("./build/manager/main.dll");
-		if (!h) {
-			throw "No manager";
-		}
+		// h = LoadLibrary("./build/manager/main.dll");
+		// if (!h) {
+		// 	throw "No manager";
+		// }
 
-		GetClassObject = (GetClassObjectType)GetProcAddress(h,"GetClassObject");
+		// GetClassObject = (GetClassObjectType)GetProcAddress(h,"GetClassObject");
 		
-		if (!GetClassObject) {
-        	throw "No manager method";
-      	}
-		
+		// if (!GetClassObject) {
+        // 	throw "No manager method";
+      	// }
+		CoInitialize(NULL);
+
+		const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
+
+		const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
+
 		IClassFactory* pCF = NULL;
       	
-		HRESULT resFactory = GetClassObject(CLSID_Server_2,IID_IClassFactory,(void**)&pCF);
+		HRESULT resFactory = CoGetClassObject(CLSID_Server,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
       
       	if (!(SUCCEEDED(resFactory))) {
          	throw "No factoty";
@@ -71,18 +73,6 @@ int main() {
 		pSP->Corrected_Sample_Variance();
 		is->summ();
 
-		ISample_Processing* pSP2 = pSP;
-		pSP2->AddRef();
-		pSP2->Sample_Average();
-		pSP2->Sample_Variance();
-		pSP2->Corrected_Sample_Variance();
-      	pSP2->Release();
-
-		ISumma* is2 = is;
-		is2->AddRef();
-		is2->summ();
-		is2->Release();
-
 		pSP->Release();
 		pGA->Release(); 
 		is->Release(); 
@@ -96,6 +86,8 @@ int main() {
     catch (...) {
         printf("Main::Error: Unknown\n");
     }
+
+	CoUninitialize();
 	
 	printf("Main::Finish\n");
 	
