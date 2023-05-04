@@ -1,1 +1,1 @@
-document.write(9 - Date.getMonth() + 1)
+document.write(new Date('September, 2023 ').getMonth() - new Date().getMonth())

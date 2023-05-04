@@ -1,8 +1,6 @@
 let number = Number(prompt("Enter the number "))
-let spisok = []
-for (i = 0 ; i<spisok.length; i++) {
-    n = number - spisok[i]
-    if(number ===  0){
 
-    }
+for (let i = 0; i <= Math.floor(Math.sqrt(number/2)); i++) {
+    let j = Math.sqrt(number - i ** 2);
+    if (j - Math.floor(j) == 0) document.write(i, " ", j );
 }

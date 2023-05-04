@@ -18,7 +18,7 @@ function greet(lang, color) {
     }
 }
 
-var n = String(prompt());
-var c = String(prompt());
+let n = String(prompt());
+let c = String(prompt());
 
 greet(n, c);

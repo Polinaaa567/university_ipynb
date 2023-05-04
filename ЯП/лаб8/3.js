@@ -4,5 +4,6 @@ function recursiya(x){
     }
     return recursiya(x - 1) + recursiya(x - 2);
 } 
-var n = Number(prompt("Enter the number n "))
+let n = Number(prompt("Enter the number n "))
+
 document.write(recursiya(n));
