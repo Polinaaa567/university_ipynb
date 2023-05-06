@@ -30,16 +30,18 @@ int main() {
       	// }
 		CoInitialize(NULL);
 
+		// {91A42CAA-5777-4E80-934E-07DE64502FD6}
+
 		const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
 
-		const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
+		// const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
 		IClassFactory* pCF = NULL;
       	
 		HRESULT resFactory = CoGetClassObject(CLSID_Server,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
       
       	if (!(SUCCEEDED(resFactory))) {
-         	throw "No factoty";
+         	throw "No factory";
       	}
 
 		IGet_Array* pGA = NULL;
@@ -61,21 +63,21 @@ int main() {
           throw "No query";
       	}
 
-		ISumma* is = NULL;
-		resQuery = pGA->QueryInterface(IID_ISumma,(void**)&is);
-		if (!(SUCCEEDED(resQuery))) {
-			throw "No query";
-		}
+		// ISumma* is = NULL;
+		// resQuery = pGA->QueryInterface(IID_ISumma,(void**)&is);
+		// if (!(SUCCEEDED(resQuery))) {
+		// 	throw "No query";
+		// }
 
 		cout << "Client::Main::Success ISample_Processing:" << endl;
 		pSP->Sample_Average();
 		pSP->Sample_Variance();
 		pSP->Corrected_Sample_Variance();
-		is->summ();
+		// is->summ();
 
 		pSP->Release();
 		pGA->Release(); 
-		is->Release(); 
+		// is->Release(); 
 		pCF->Release();    
 	}
 	catch (const char* str) {
