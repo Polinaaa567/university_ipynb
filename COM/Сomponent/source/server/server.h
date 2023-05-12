@@ -3,9 +3,8 @@
 
 #include "interfaces.h"
 
-
 //компонент
-class Server: public ISample_Processing, public IGet_Array {
+class Server: public ISample_Processing, IGet_Array {
 	private: //обработка выборки
 	  int fRefCount;
 	 
@@ -18,11 +17,9 @@ class Server: public ISample_Processing, public IGet_Array {
 	 Server();
 	 ~Server();
 
-
 	 virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
 	 virtual ULONG __stdcall AddRef();
 	 virtual ULONG __stdcall Release();
-
 
 	 virtual void __stdcall Sample_Average();
 	 virtual void __stdcall Sample_Variance();
@@ -41,10 +38,9 @@ class ServerFactory: public IClassFactory {
      virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
 	 virtual ULONG __stdcall AddRef();
 	 virtual ULONG __stdcall Release();
+	 
 	 virtual HRESULT __stdcall CreateInstance(IUnknown* pUnknownOuter, const IID& iid, void** ppv);
 	 virtual HRESULT __stdcall LockServer(BOOL bLock);
 };
-
-
 
 #endif // SERVER_H_INCLUDED

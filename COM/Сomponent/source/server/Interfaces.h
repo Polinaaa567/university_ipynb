@@ -11,13 +11,13 @@ const IID IID_IGet_Array = {0x00000101,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0
 const IID IID_ISample_Processing = {0x00000102,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}};
 
 
-class ISample_Processing: public IUnknown
-{
+class ISample_Processing: public IUnknown {
 	public:
 	 virtual void __stdcall Sample_Average()=0;  //выборочное среднее
 	 virtual void __stdcall Sample_Variance()=0; //выборочная дисперсия
 	 virtual void __stdcall Corrected_Sample_Variance()=0; //исправленная выборочная дисперсия 
 };
+
 
 //интерфейс с методами для считывания из файла
 class IGet_Array: public IUnknown {
@@ -25,6 +25,5 @@ class IGet_Array: public IUnknown {
 	 virtual void __stdcall InputMas2() = 0;
 	 virtual void __stdcall InputMas1() = 0;
 };
-
 
 #endif // Interfaces_H_INCLUDED

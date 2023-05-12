@@ -10,15 +10,15 @@
 //компонент
 class Server_2: public ISample_Processing, IGet_Array, ISumma  {
 	private: 
-	int a;
-	int b;
-	 int fRefCount;
+	 int a;
+	 int b;
+ 	 int fRefCount;
 	 
-	 IGet_Array* ig_Simple;
-	 ISample_Processing* is_Simple;
+	 IGet_Array* ig_Simple = NULL;
+	 ISample_Processing* is_Simple = NULL;
+     IClassFactory* pCF = NULL;
 
 	public:
-
 	 Server_2();
 	 virtual ~Server_2();
 
@@ -34,8 +34,10 @@ class Server_2: public ISample_Processing, IGet_Array, ISumma  {
 	 virtual ULONG __stdcall Release();
 };
 
+
 class ServerFactory_2: public IClassFactory {
-    int fRefCount;
+     int fRefCount;
+	
 	public:
 	 ServerFactory_2();
 	 ~ServerFactory_2();
@@ -46,7 +48,6 @@ class ServerFactory_2: public IClassFactory {
 	 virtual HRESULT __stdcall CreateInstance(IUnknown* pUnknownOuter, const IID& iid, void** ppv);
 	 virtual HRESULT __stdcall LockServer(BOOL bLock);
 };
-
 
 
 #endif // SERVER_H_INCLUDED
