@@ -10,6 +10,8 @@ using namespace std;
 Server_2::Server_2() {
    a = 5;
    b = 8;
+   px1=123;
+
    println("Server_2::Server_2");
    fRefCount = 0;
 
@@ -77,6 +79,9 @@ HRESULT __stdcall Server_2::QueryInterface(const IID& iid, void** ppv) {
    else if (iid == IID_ISumma) {
       *ppv = (ISumma*)this;
    }
+   else if(iid == IID_IDispatch)  {
+      *ppv = (IDispatch*)this;
+   }
    else {
      *ppv = NULL;
      return E_NOINTERFACE;
@@ -130,8 +135,95 @@ void __stdcall Server_2::Corrected_Sample_Variance() {
 
 void __stdcall Server_2::summ(){
    cout<< "Server_2::summ = " << a + b << endl;
+   
 }
 
+//-------------------------------------------------
+
+HRESULT __stdcall Server_2::GetTypeInfoCount(UINT* pctinfo)
+{
+    println("Server_2:GetTypeInfoCount");
+    return S_OK;
+}
+
+HRESULT __stdcall Server_2::GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo)
+{
+    println("Server_2:GetTypeInfo");
+    return S_OK;
+}
+
+HRESULT __stdcall Server_2::GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames,
+                                    LCID lcid, DISPID* rgDispId)
+{
+    println("CA:GetIDsOfNames");
+    if (cNames!=1) {return E_NOTIMPL;}
+
+    if (wcscmp(rgszNames[0],L"Sample_Average")==0)
+    {
+      rgDispId[0] = 1;
+    }
+    else if (wcscmp(rgszNames[0],L"Sample_Variance")==0)
+    {
+      rgDispId[0] = 2;
+    }
+
+    //Property
+    else if (wcscmp(rgszNames[0],L"Px1")==0)
+    {
+      rgDispId[0] = 3;
+    }
+    else
+    {
+       return E_NOTIMPL;
+    }
+    return S_OK;
+}
+
+HRESULT __stdcall Server_2::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,WORD wFlags, DISPPARAMS* pDispParams,VARIANT* pVarResult,
+                             EXCEPINFO* pExcepInfo, UINT* puArgErr)
+{
+    println("Server_2:Invoke");
+    if (dispIdMember==1)
+    {
+       Sample_Average();
+    }
+    else if (dispIdMember==2)
+    {
+       Sample_Variance();
+    }
+
+    //Property
+    else if (dispIdMember==3)
+    {
+       //printf("%d\n",wFlags);
+       if ( (wFlags==DISPATCH_PROPERTYGET) || (wFlags==1) || (wFlags==3) )
+       {
+          if (pVarResult!=NULL)
+          {
+            pVarResult->vt = VT_INT;
+            pVarResult->intVal = px1;
+          }
+       }
+       else if (wFlags==DISPATCH_PROPERTYPUT)
+       {
+          DISPPARAMS param = *pDispParams;
+          VARIANT arg = (param.rgvarg)[0];
+          //printf("%d\n",arg.vt);
+          VariantChangeType(&arg,&arg,0,VT_INT);
+          //printf("%d\n",arg.vt);
+          px1 = arg.intVal;
+       }
+       else
+       {
+         return E_NOTIMPL;
+       }
+    }
+    else
+    {
+      return E_NOTIMPL;
+    }
+    return S_OK;
+}
 //******************************************************************************************
 
 ServerFactory_2::ServerFactory_2() {
