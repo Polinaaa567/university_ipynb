@@ -43,12 +43,10 @@ int main() {
 			//mbstowcs
 			//wcstombs
 			HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_2_ProgID);
-			if (!(SUCCEEDED(resCLSID_ProgID)))
-			{        
+			if (!(SUCCEEDED(resCLSID_ProgID))) {        
 				throw "No CLSID form ProgID";         
 			}
-			else
-			{
+			else {
 				printf("CLSID form ProgID OK!");
 				printf("\n");
 			}
@@ -96,59 +94,54 @@ int main() {
 		
 		IDispatch* pDisp = NULL;
       
-	  HRESULT resQueryDisp = pSP->QueryInterface(IID_IDispatch,(void**)&pDisp);
-      if (!(SUCCEEDED(resQueryDisp)))
-      {
-          //printf("%X\n",(unsigned int)resQuery);
-          throw "No query dispatch";
-      }
+		HRESULT resQueryDisp = pGA->QueryInterface(IID_IDispatch,(void**)&pDisp);
+		if (!(SUCCEEDED(resQueryDisp)))
+		{
+			throw "No query dispatch";
+		}
 
-      DISPID dispid;
+		DISPID dispid;
 
-      int namesCount = 1;
-      OLECHAR** names = new OLECHAR*[namesCount];
-      OLECHAR* name = const_cast<OLECHAR*>(L"Sample_Average");
-      names[0] = name;
-      HRESULT resID_Name = pDisp->GetIDsOfNames(
-                                                    IID_NULL_,
-                                                    names,
-                                                    namesCount,
-                                                    GetUserDefaultLCID(),
-                                                    &dispid
-                                               );
-      if (!(SUCCEEDED(resID_Name)))
-      {
-          //printf("%X\n",(unsigned int)resID_Name);
-          printf("No ID of name\n");
-      }
-      else
-      {
-         DISPPARAMS dispparamsNoArgs = {
-                                         NULL,
-                                         NULL,
-                                         0,
-                                         0,
-                                       };
+		int namesCount = 1;
+		OLECHAR** names = new OLECHAR*[namesCount];
+		OLECHAR* name = const_cast<OLECHAR*>(L"summ");
+		names[0] = name;
+		HRESULT resID_Name = pDisp->GetIDsOfNames(
+													IID_NULL_,
+													names,
+													namesCount,
+													GetUserDefaultLCID(),
+													&dispid
+												);
 
-         HRESULT resInvoke = pDisp->Invoke(
-                                            dispid, // DISPID
-                                            IID_NULL_,
-                                            GetUserDefaultLCID(),
-                                            DISPATCH_METHOD,
-                                            &dispparamsNoArgs,
-                                            NULL,
-                                            NULL,
-                                            NULL
-                                          );
-        if (!(SUCCEEDED(resInvoke)))
-        {
-          //printf("%X\n",(unsigned int)resInvoke);
-          printf("Invoke error\n");
-        }
-      }
+		if (!(SUCCEEDED(resID_Name))) {
+			printf("No ID of name\n");
+		}
+		else {
+			DISPPARAMS dispparamsNoArgs = {
+											NULL,
+											NULL,
+											0,
+											0,
+										};
 
-      	pDisp->Release();
-	  	pSP->Release();
+			HRESULT resInvoke = pDisp->Invoke (
+												dispid, // DISPID
+												IID_NULL_,
+												GetUserDefaultLCID(),
+												DISPATCH_METHOD,
+												&dispparamsNoArgs,
+												NULL,
+												NULL,
+												NULL
+											);
+			if (!(SUCCEEDED(resInvoke))) {
+				printf("Invoke error\n");
+			}
+		}
+
+		pDisp->Release();
+		pSP->Release();
 		pGA->Release(); 
 		is->Release(); 
 		pCF->Release(); 

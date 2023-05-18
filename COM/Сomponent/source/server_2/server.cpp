@@ -67,24 +67,24 @@ Server_2::~Server_2() {
 HRESULT __stdcall Server_2::QueryInterface(const IID& iid, void** ppv) {
    println("Server_2::QueryInterface");
 
-   if (iid==IID_IUnknown) {
-    *ppv = (IUnknown*)(ISample_Processing*)this;
+   if (iid == IID_IUnknown) {
+      *ppv = (IUnknown*)(ISample_Processing*)this;
    }
    else if (iid == IID_ISample_Processing) {
-    *ppv = static_cast<ISample_Processing*>(this);
+      *ppv = (ISample_Processing*)this;
    }
    else if (iid == IID_IGet_Array) {
-    *ppv = (IGet_Array*)this;
+      *ppv = (IGet_Array*)this;
    }
    else if (iid == IID_ISumma) {
       *ppv = (ISumma*)this;
    }
-   else if(iid == IID_IDispatch)  {
+   else if (iid == IID_IDispatch)  {
       *ppv = (IDispatch*)this;
    }
    else {
-     *ppv = NULL;
-     return E_NOINTERFACE;
+      *ppv = NULL;
+      return E_NOINTERFACE;
    }
 
    this->AddRef();
@@ -109,120 +109,100 @@ ULONG __stdcall Server_2::Release() {
 //методы компонента
 
 void __stdcall Server_2::InputMas1() {
-  println("Server_2::InputMas1:Full delegating to the server component ");
-  ig_Simple->InputMas1();
+   println("Server_2::InputMas1:Full delegating to the server component ");
+   ig_Simple->InputMas1();
 }
 
 void __stdcall Server_2::InputMas2() {
-  println("Server_2::InputMas2:Full delegating to the server component");
-  ig_Simple->InputMas2();
+   println("Server_2::InputMas2:Full delegating to the server component");
+   ig_Simple->InputMas2();
 }
 
 void __stdcall Server_2::Sample_Average() {
-  println("Server_2::Sample_Average:Full delegating to the server component");
-  is_Simple->Sample_Average();
+   println("Server_2::Sample_Average:Full delegating to the server component");
+   is_Simple->Sample_Average();
 }
 
 void __stdcall Server_2::Sample_Variance() {
-  println("Server_2::Sample_Variance:Full delegating to the server component");
-  is_Simple->Sample_Variance();
+   println("Server_2::Sample_Variance:Full delegating to the server component");
+   is_Simple->Sample_Variance();
 }
 
 void __stdcall Server_2::Corrected_Sample_Variance() {
-  println("Server_2::Corrected_Sample_Variance:Full delegating to the server component");
-  is_Simple->Corrected_Sample_Variance();
+   println("Server_2::Corrected_Sample_Variance:Full delegating to the server component");
+   is_Simple->Corrected_Sample_Variance();
 }
 
 void __stdcall Server_2::summ(){
    cout<< "Server_2::summ = " << a + b << endl;
-   
 }
 
 //-------------------------------------------------
 
 HRESULT __stdcall Server_2::GetTypeInfoCount(UINT* pctinfo)
 {
-    println("Server_2:GetTypeInfoCount");
-    return S_OK;
+   println("Server_2:GetTypeInfoCount");
+   return S_OK;
 }
 
 HRESULT __stdcall Server_2::GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo)
 {
-    println("Server_2:GetTypeInfo");
-    return S_OK;
+   println("Server_2:GetTypeInfo");
+   return S_OK;
 }
 
 HRESULT __stdcall Server_2::GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames,
                                     LCID lcid, DISPID* rgDispId)
 {
-    println("CA:GetIDsOfNames");
-    if (cNames!=1) {return E_NOTIMPL;}
+   println("Server_2:GetIDsOfNames");
+   if (cNames!=1) {return E_NOTIMPL;}
 
-    if (wcscmp(rgszNames[0],L"Sample_Average")==0)
-    {
+   if (wcscmp(rgszNames[0], L"summ") == 0) {
       rgDispId[0] = 1;
-    }
-    else if (wcscmp(rgszNames[0],L"Sample_Variance")==0)
-    {
-      rgDispId[0] = 2;
-    }
-
+   }
     //Property
-    else if (wcscmp(rgszNames[0],L"Px1")==0)
-    {
+   else if (wcscmp(rgszNames[0], L"Px1") == 0) {
       rgDispId[0] = 3;
-    }
-    else
-    {
-       return E_NOTIMPL;
-    }
-    return S_OK;
+   }
+   else {
+      return E_NOTIMPL;
+   }
+   
+   return S_OK;
 }
 
-HRESULT __stdcall Server_2::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,WORD wFlags, DISPPARAMS* pDispParams,VARIANT* pVarResult,
-                             EXCEPINFO* pExcepInfo, UINT* puArgErr)
-{
-    println("Server_2:Invoke");
-    if (dispIdMember==1)
-    {
-       Sample_Average();
-    }
-    else if (dispIdMember==2)
-    {
-       Sample_Variance();
-    }
+HRESULT __stdcall Server_2::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult,
+                             EXCEPINFO* pExcepInfo, UINT* puArgErr) {
+   println("Server_2:Invoke");
+   if (dispIdMember==1) {
+      summ();
+   }
 
-    //Property
-    else if (dispIdMember==3)
-    {
+   //Property
+   else if(dispIdMember==3) {
        //printf("%d\n",wFlags);
-       if ( (wFlags==DISPATCH_PROPERTYGET) || (wFlags==1) || (wFlags==3) )
-       {
-          if (pVarResult!=NULL)
-          {
+      if((wFlags==DISPATCH_PROPERTYGET) || (wFlags == 1) || (wFlags == 3)) {
+         if(pVarResult!=NULL) {
             pVarResult->vt = VT_INT;
             pVarResult->intVal = px1;
-          }
-       }
-       else if (wFlags==DISPATCH_PROPERTYPUT)
-       {
-          DISPPARAMS param = *pDispParams;
-          VARIANT arg = (param.rgvarg)[0];
+         }
+      }
+      else if (wFlags==DISPATCH_PROPERTYPUT) {
+         DISPPARAMS param = *pDispParams;
+         VARIANT arg = (param.rgvarg)[0];
           //printf("%d\n",arg.vt);
-          VariantChangeType(&arg,&arg,0,VT_INT);
+         VariantChangeType(&arg,&arg,0,VT_INT);
           //printf("%d\n",arg.vt);
-          px1 = arg.intVal;
-       }
-       else
-       {
+         px1 = arg.intVal;
+      }
+      
+      else {
          return E_NOTIMPL;
-       }
-    }
-    else
-    {
+      }
+   } else {
       return E_NOTIMPL;
-    }
-    return S_OK;
+   }
+   return S_OK;
 }
 //******************************************************************************************
 
@@ -233,21 +213,21 @@ ServerFactory_2::ServerFactory_2() {
 }
 
 ServerFactory_2::~ServerFactory_2() {
-  println("ServerFactory_2::Destructor");  
+   println("ServerFactory_2::Destructor");  
 }
 
 HRESULT __stdcall ServerFactory_2::QueryInterface(const IID& iid, void** ppv) {
    println("ServerFactory_2::QueryInterface");
 
    if (iid==IID_IUnknown) {
-    *ppv = (IUnknown*)(IClassFactory*)this;
+      *ppv = (IUnknown*)(IClassFactory*)this;
    }
    else if (iid == IID_IClassFactory) {
-    *ppv = (IClassFactory*)this;
+      *ppv = (IClassFactory*)this;
    }
    else {
-     *ppv = NULL;
-     return E_NOINTERFACE;
+      *ppv = NULL;
+      return E_NOINTERFACE;
    }
    
    this->AddRef();
@@ -261,8 +241,7 @@ ULONG __stdcall ServerFactory_2::AddRef() {
    return fRefCount;
 }
 
-ULONG __stdcall ServerFactory_2::Release()
-{
+ULONG __stdcall ServerFactory_2::Release() {
    println("ServerFactory_2::Release");
    fRefCount--;
    cout << "ServerFactory_2::Current references: " << fRefCount << endl;
@@ -278,20 +257,20 @@ HRESULT  __stdcall ServerFactory_2::CreateInstance(IUnknown* pUnknownOuter, cons
    }
    
    Server_2* p = new Server_2();
-   HRESULT res = p->QueryInterface(iid,ppv);
-   return res;
+   return p->QueryInterface(iid,ppv);
 }
 
 HRESULT __stdcall ServerFactory_2::LockServer(BOOL bLock) {
-  println("ServerFactory_2::LockServer");
-  return S_OK;
+   println("ServerFactory_2::LockServer");
+   return S_OK;
 }
 
 void println(const char* str) {
-    printf(str);
-    printf("\n");
+   printf(str);
+   printf("\n");
 }
 
+// 91A42CBA-2577-4E80-934E-07DE64502FD7
 const CLSID CLSID_Server_2= {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
 HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv) {
@@ -299,7 +278,7 @@ HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv)
    if (clsid==CLSID_Server_2) {
       try {
          ServerFactory_2* fa  = new ServerFactory_2();
-         return fa->QueryInterface(iid,ppv);
+         return fa->QueryInterface(iid, ppv);
       }
       catch(...) {
          *ppv = NULL; 
@@ -307,7 +286,7 @@ HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv)
       }
    }
    else {
-     *ppv = NULL;
-     return E_NOTIMPL;
+      *ppv = NULL;
+      return E_NOTIMPL;
    }
 }
