@@ -1,14 +1,12 @@
 #ifndef SERVER_H_INCLUDED
 #define SERVER_H_INCLUDED
 
-#include "interfaces.h"
+#include "Interfaces.h"
 #include "Components.h"
 #include <stdio.h>
 
-#include <objbase.h>
-
 //компонент
-class Server_2: public ISample_Processing, IGet_Array, ISumma, IDispatch  {
+class Server_2: public ISample_Processing, IGet_Array, ISumma, IDispatch {
 	private: 
 	 int a;
 	 int b;
@@ -17,11 +15,16 @@ class Server_2: public ISample_Processing, IGet_Array, ISumma, IDispatch  {
 	 
 	 IGet_Array* ig_Simple = NULL;
 	 ISample_Processing* is_Simple = NULL;
-     IClassFactory* pCF = NULL;
+    //  IClassFactory* pCF = NULL;
 
 	public:
 	 Server_2();
 	 virtual ~Server_2();
+	 
+	 virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
+	 
+	 virtual ULONG __stdcall AddRef();
+	 virtual ULONG __stdcall Release();
 
 	 virtual void __stdcall InputMas2();
 	 virtual void __stdcall InputMas1();
@@ -29,11 +32,7 @@ class Server_2: public ISample_Processing, IGet_Array, ISumma, IDispatch  {
 	 virtual void __stdcall Sample_Variance(); //выборочная дисперсия
 	 virtual void __stdcall Corrected_Sample_Variance(); //исправленная выборочная дисперсия 
 	 virtual void __stdcall summ();
-	
-	 virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
-	 
-	 virtual ULONG __stdcall AddRef();
-	 virtual ULONG __stdcall Release();
+
 	 
 	 virtual HRESULT __stdcall GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId);
 	 virtual HRESULT __stdcall Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams,VARIANT* pVarResult,
@@ -54,6 +53,7 @@ class ServerFactory_2: public IClassFactory {
      virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
 	 virtual ULONG __stdcall AddRef();
 	 virtual ULONG __stdcall Release();
+	 
 	 virtual HRESULT __stdcall CreateInstance(IUnknown* pUnknownOuter, const IID& iid, void** ppv);
 	 virtual HRESULT __stdcall LockServer(BOOL bLock);
 };

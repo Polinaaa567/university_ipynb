@@ -1,17 +1,12 @@
 #include <objbase.h>
 #include <stdio.h>
-#include <iostream>
 
 #include "Interfaces.h"
-
-using namespace std;
 
 // typedef HRESULT __stdcall (*GetClassObjectType) (const CLSID& clsid, const IID& iid, void** ppv);
 
 int main() { 
 	printf("Client::Main::Start\n");	
-
-	printf("Client::Main::GetClassObject CServer&IClassFactory_\n" );	
 				
 	try {
 		// GetClassObjectType GetClassObject;
@@ -32,15 +27,13 @@ int main() {
 		CoInitialize(NULL);
 
 		// {91A42CAA-5777-4E80-934E-07DE64502FD6}
-
 		// const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
-
 		// const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
 		CLSID CLSID_Server_2_ProgID;
 		{
 			const wchar_t* progID = L"IKS.Application";
-			//mbstowcs
+			// mbstowcs;
 			//wcstombs
 			HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_2_ProgID);
 			if (!(SUCCEEDED(resCLSID_ProgID))) {        
@@ -54,9 +47,8 @@ int main() {
 
 		IClassFactory* pCF = NULL;
       	
-		// HRESULT resFactory = CoGetClassObject(CLSID_Server,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
+		// HRESULT resFactory = CoGetClassObject(CLSID_Server2,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
       	HRESULT resFactory = CoGetClassObject(CLSID_Server_2_ProgID,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
-
       	if (!(SUCCEEDED(resFactory))) {
          	throw "Client::Main::No factory";
       	}

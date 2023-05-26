@@ -4,7 +4,6 @@
 #include <fstream>
 #include <math.h>
 
-#include "Components.h"
 
 using namespace std;
 
@@ -29,7 +28,7 @@ HRESULT __stdcall Server::QueryInterface(const IID& iid, void** ppv) {
       *ppv = (IUnknown*)(ISample_Processing*)this;
     } 
     else if (iid == IID_ISample_Processing) {
-      *ppv = static_cast<ISample_Processing*>(this);
+      *ppv = (ISample_Processing*)this;
     }
     else if (iid == IID_IGet_Array) {
       *ppv = (IGet_Array*)this;
@@ -103,8 +102,6 @@ void __stdcall Server::InputMas1() {
 
 }
 
-
-
 //-------------------------------------------------------
 
 //методы интерфайса ISample_Processing
@@ -140,7 +137,7 @@ void __stdcall Server::Corrected_Sample_Variance() {
   float sum = 0;
 
   for(int i=0; i< 5; i++) {
-    sum += pow((x[i]- Sample_average), 2) * n[i];
+    sum += pow((x[i] - Sample_average), 2) * n[i];
   }
   
   cout << "Server::Corrected_Sample_Variance = " << round(sum / (volume-1) * 100) / 100 << endl << endl;
@@ -211,13 +208,22 @@ void println(const char* str) {
   printf("\n");
 }
 
-const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
-
 HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv) {
   println("Component::GetClassObject");
-  
-  if (clsid==CLSID_Server) {
-    ServerFactory* fa  = new ServerFactory();
+  CLSID CLSID_Server_ProgID;
+  {
+    const wchar_t* progID = L"App.Application";
+    HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_ProgID);
+    if (!(SUCCEEDED(resCLSID_ProgID))) {        
+      throw "No CLSID form ProgID";         
+    }
+    else {
+      printf("CLSID form ProgID2 OK!");
+      printf("\n");
+    }
+  }
+  if (clsid==CLSID_Server_ProgID) {
+    ServerFactory* fa = new ServerFactory();
     return fa->QueryInterface(iid,ppv);
   }
   else {

@@ -1,2 +1,2 @@
-cscript.exe ./script/script.vbs
+cscript.exe ./vbs/script/script.vbs
 pause

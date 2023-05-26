@@ -3,13 +3,10 @@ import aiohttp
 
 
 async def get_ip(service):
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(service) as response:
-                if response.status == 200:
-                    return await response.text(), service
-    except:
-        pass
+    async with aiohttp.ClientSession() as session:
+        async with session.get(service) as response:
+            if response.status == 200:
+                return await response.text(), service
 
 
 async def main():

@@ -1,7 +1,9 @@
 #ifndef SERVER_H_INCLUDED
 #define SERVER_H_INCLUDED
 
-#include "interfaces.h"
+#include "Interfaces.h"
+#include "Components.h"
+
 
 //компонент
 class Server: public ISample_Processing, IGet_Array {

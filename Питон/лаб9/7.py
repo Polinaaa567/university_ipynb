@@ -1,7 +1,5 @@
 import discord
 import requests
-import json
-import aiohttp
 
 config = {
     'token': 'MTEwOTc2MjQxMTI5ODI5NTg0OQ.Gbi8L_.DCURActB9AIRWIp_S_LCBmyZ5Zf6Z9QhBRUsMI'

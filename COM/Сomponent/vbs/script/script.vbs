@@ -1,12 +1,11 @@
- 
-  set app2 = CreateObject("IKS.Application")
+  set app = CreateObject("IKS.Application")
   
-  app2.summ
+  app.summ
     
-  app2.Px1 = 11
-  p = app2.Px1()
+  app.Px1 = 11
+  p = app.Px1()
   WScript.Echo(p)
 
-  app2.Px1 = 111
-  p = app2.Px1
+  app.Px1 = 111
+  p = app.Px1
   WScript.Echo(p)

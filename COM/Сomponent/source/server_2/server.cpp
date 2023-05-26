@@ -1,5 +1,4 @@
 #include "server.h"
-
 #include <objbase.h>
 #include <iostream>
 #include <fstream>
@@ -15,33 +14,45 @@ Server_2::Server_2() {
    println("Server_2::Server_2");
    fRefCount = 0;
 
-   println("Server_2::Constructor");
-   CoInitialize(NULL);
-
+   // CoInitialize(NULL);
 
 //   HINSTANCE h;
 //   h=LoadLibrary("./build/manager/main.dll");
-//   if (!h)
-//   {
+//   if (!h) {
 //      throw "No manager";
 //   }
    
 //   CreateInstanceType CreateInstance = (CreateInstanceType) GetProcAddress(h,"CreateInstance");
-//   if (!CreateInstance)
-//   {
+//   if (!CreateInstance) {
 //      throw "No manager method";
 //   }
   //Getting manager method (End)
 
-       
-   const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
-      
-      
-   HRESULT resFactory = CoGetClassObject(CLSID_Server,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
-   if (!(SUCCEEDED(resFactory))) {
-      throw "Server_2::No factory";
+  CLSID CLSID_Server_ProgID;
+  {
+      const wchar_t* progID = L"App.Application";
+      //mbstowcs;
+      //wcstombs
+      HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_ProgID);
+      if (!(SUCCEEDED(resCLSID_ProgID))) {        
+         throw "No CLSID form ProgID";         
+      }
+      else {
+         printf("CLSID form ProgID2 OK!");
+         printf("\n");
+      }
    }
-   HRESULT resInstance = pCF->CreateInstance(NULL,IID_IGet_Array,(void**)&ig_Simple);
+       
+   // const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
+        
+   // HRESULT resFactory = CoGetClassObject(,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
+   // println("Server_2::LYYYYYYYYY DA SCOLKO MOSHNO");
+
+   // if (!(SUCCEEDED(resFactory))) {
+   //    throw "Server_2::No factory";
+   // }
+
+   HRESULT resInstance = CoCreateInstance(CLSID_Server_ProgID,NULL,CLSCTX_INPROC_SERVER,IID_IGet_Array,(void**)&ig_Simple);
    if (!(SUCCEEDED(resInstance))) {
       throw "Server_2::No instance";
    }
@@ -59,34 +70,33 @@ Server_2::~Server_2() {
    
    ig_Simple->Release();
    is_Simple->Release();
-   pCF->Release();
+   // pCF->Release();
    
-   CoUninitialize();
+   // CoUninitialize();
 }
 
 HRESULT __stdcall Server_2::QueryInterface(const IID& iid, void** ppv) {
    println("Server_2::QueryInterface");
 
    if (iid == IID_IUnknown) {
-      *ppv = (IUnknown*)(ISample_Processing*)this;
-   }
-   else if (iid == IID_ISample_Processing) {
-      *ppv = (ISample_Processing*)this;
+      *ppv = (IUnknown*)(IGet_Array*)this;
    }
    else if (iid == IID_IGet_Array) {
       *ppv = (IGet_Array*)this;
    }
+   else if (iid == IID_ISample_Processing) {
+      *ppv = (ISample_Processing*)this;
+   }
    else if (iid == IID_ISumma) {
       *ppv = (ISumma*)this;
    }
-   else if (iid == IID_IDispatch)  {
+   else if (iid == IID_IDispatch){
       *ppv = (IDispatch*)this;
    }
    else {
       *ppv = NULL;
       return E_NOINTERFACE;
    }
-
    this->AddRef();
    return S_OK;
 }
@@ -160,9 +170,23 @@ HRESULT __stdcall Server_2::GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT
    if (wcscmp(rgszNames[0], L"summ") == 0) {
       rgDispId[0] = 1;
    }
-    //Property
    else if (wcscmp(rgszNames[0], L"Px1") == 0) {
+      rgDispId[0] = 2;
+   }
+   else if (wcscmp(rgszNames[0], L"InputMas1") == 0) {
       rgDispId[0] = 3;
+   }
+   else if (wcscmp(rgszNames[0], L"InputMas2") == 0) {
+      rgDispId[0] = 4;
+   }
+   else if (wcscmp(rgszNames[0], L"Sample_Average") == 0) {
+      rgDispId[0] = 5;
+   }
+   else if (wcscmp(rgszNames[0], L"Sample_Variance") == 0) {
+      rgDispId[0] = 6;
+   }
+   else if (wcscmp(rgszNames[0], L"Corrected_Sample_Variance") == 0) {
+      rgDispId[0] = 7;
    }
    else {
       return E_NOTIMPL;
@@ -177,10 +201,7 @@ HRESULT __stdcall Server_2::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, 
    if (dispIdMember==1) {
       summ();
    }
-
-   //Property
-   else if(dispIdMember==3) {
-       //printf("%d\n",wFlags);
+   else if(dispIdMember==2) {
       if((wFlags==DISPATCH_PROPERTYGET) || (wFlags == 1) || (wFlags == 3)) {
          if(pVarResult!=NULL) {
             pVarResult->vt = VT_INT;
@@ -190,16 +211,29 @@ HRESULT __stdcall Server_2::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, 
       else if (wFlags==DISPATCH_PROPERTYPUT) {
          DISPPARAMS param = *pDispParams;
          VARIANT arg = (param.rgvarg)[0];
-          //printf("%d\n",arg.vt);
          VariantChangeType(&arg,&arg,0,VT_INT);
-          //printf("%d\n",arg.vt);
          px1 = arg.intVal;
       }
-      
       else {
          return E_NOTIMPL;
       }
-   } else {
+   } 
+   else if(dispIdMember==3){
+      InputMas1();
+   }
+   else if(dispIdMember==4){
+      InputMas2();
+   }
+    else if(dispIdMember==5){
+      Sample_Average();
+   }
+    else if(dispIdMember==6){
+      Sample_Variance();
+   }
+    else if(dispIdMember==7){
+      Corrected_Sample_Variance();
+   }
+   else {
       return E_NOTIMPL;
    }
    return S_OK;
@@ -271,19 +305,31 @@ void println(const char* str) {
 }
 
 // 91A42CBA-2577-4E80-934E-07DE64502FD7
-const CLSID CLSID_Server_2= {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
+// const CLSID CLSID_Server_2= {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
 HRESULT __stdcall GetClassObject(const CLSID& clsid, const IID& iid, void** ppv) {
    println("Component Server_2::GetClassObject");
-   if (clsid==CLSID_Server_2) {
-      try {
+   CLSID CLSID_Server_2_ProgID;
+		{
+			const wchar_t* progID = L"IKS.Application";
+			HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_2_ProgID);
+			if (!(SUCCEEDED(resCLSID_ProgID))) {        
+				throw "No CLSID form ProgID";         
+			}
+			else {
+				printf("CLSID form ProgID OK!");
+				printf("\n");
+			}
+      }
+   if (clsid==/*CLSID_Server_2*/CLSID_Server_2_ProgID) {
+      // try {
          ServerFactory_2* fa  = new ServerFactory_2();
          return fa->QueryInterface(iid, ppv);
-      }
-      catch(...) {
-         *ppv = NULL; 
-         return E_UNEXPECTED;
-      }
+      // }
+      // catch(...) {
+      //    *ppv = NULL; 
+      //    return E_UNEXPECTED;
+      // }
    }
    else {
       *ppv = NULL;
