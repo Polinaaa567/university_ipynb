@@ -7,7 +7,7 @@ print(example1)
 
 # 1
 print(example1['d'])
-
+#
 # 2
 print(example1.b)
 
