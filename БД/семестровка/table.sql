@@ -32,7 +32,6 @@ create table statistics(
     constraint statistics_id_pk primary key,
     id_building                 number(7) not null,
     foreign key(id_building) references building(id),
-    number_beds                 number(7) not null,
     number_occupied_rooms       number(7) not null,
     number_available_rooms      number(7) not null
 );
@@ -141,33 +140,6 @@ create table complaints_suggestions(
 
 -- ------------------------------------------
 
-create sequence seq_hotel_class_id
-    increment by 1 
-    start with 1
-    maxvalue 6
-    nocache
-    nocycle;
-
-create sequence seq_price_room_id
-    increment by 1 
-    start with 1
-    maxvalue 99999
-    nocache
-    nocycle;
-
-create sequence seq_building_id
-    increment by 1 
-    start with 1
-    maxvalue 99999
-    nocache
-    nocycle;
-
-create sequence seq_statistics_id
-    increment by 1 
-    start with 1
-    maxvalue 99999
-    nocache
-    nocycle;
 
 create sequence seq_list_services_id
     increment by 1 
