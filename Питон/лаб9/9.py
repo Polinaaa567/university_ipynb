@@ -6,7 +6,6 @@ config = {
     'token': 'MTEwOTc2MjQxMTI5ODI5NTg0OQ.Gbi8L_.DCURActB9AIRWIp_S_LCBmyZ5Zf6Z9QhBRUsMI'
 }
 
-
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
