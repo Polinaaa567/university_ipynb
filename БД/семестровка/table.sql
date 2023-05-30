@@ -1,7 +1,7 @@
 create table hotel_class (
     id                          number(7)
     constraint hotel_class_id_pk primary key,
-    class_requirements          varchar2(25) not null
+    class_requirements          varchar2(255) not null
 );
 
 create table price_room (
@@ -22,7 +22,7 @@ create table building(
     number_single_rooms         number(7) not null,
     number_double_rooms         number(7) not null,
     number_triple_rooms         number(7) not null,
-    address                     varchar2(25) not null,
+    address                     varchar2(255) not null,
     id_hotel_class              number(7) not null,
     foreign key(id_hotel_class) references hotel_class(id)
  );
@@ -39,7 +39,7 @@ create table statistics(
 create table list_services (
     id                          number(7)
     constraint list_services_id_pk primary key,
-    name_services               varchar2(25) not null, 
+    name_services               varchar2(255) not null, 
     price                       number(7) not null
 );
 
@@ -50,38 +50,37 @@ create table building_service (
     foreign key(id_services) references list_services(id), 
     id_building                 number(7) not null,
     foreign key(id_building) references building(id),
-    description                 varchar2(25)
+    description                 varchar2(255)
 );
 
 create table company (
     id                          number(7)
     constraint company_id_pk primary key,
-    name_company                varchar2(25) not null,
-    fname_contact_person        varchar2(25) not null,
+    name_company                varchar2(255) not null,
+    fname_contact_person        varchar2(255) not null,
     contract_status             number(8) not null,
-    discription_activity        varchar2(25) not null,
+    discription_activity        varchar2(255) not null,
     sale                        number(7) not null
 );
 
 create table guest(
     id                          number(7)
     constraint guest_id_pk primary key,
-    last_name                   varchar2(25) not null,
-    first_name                  varchar2(25) not null,
-    patronymic                  varchar2(25) null,
+    last_name                   varchar2(255) not null,
+    first_name                  varchar2(255) not null,
     date_birth                  date,
-    gender                      varchar2(25) not null,
-    contacts                    number(25) not null,
-    amount_debt                 number(25) not null
+    gender                      varchar2(255) not null,
+    contacts                    number(7) not null,
+    amount_debt                 number(7) not null
 );
 
 create table application_settlement(
     id                          number(7)
     constraint application_settlement_id_pk primary key,
-    order_company               number(7) not null,
-    id_guest                    number(7) not null,
+    order_company               number(7),
+    id_guest                    number(7),
     foreign key(id_guest) references guest(id),
-    id_company                  number(7) not null,
+    id_company                  number(7),
     foreign key(id_company) references company(id),
     hotel_class_stars           number(7) not null,
     booking_date                date,
@@ -91,11 +90,11 @@ create table application_settlement(
     number_single_rooms         number(7) not null,
     number_double_rooms         number(7) not null,
     number_triple_rooms         number(7) not null,
-    order_processing_status     number(7) not null,
-    booking_status              number(7) not null,
+    order_processing_status     varchar(255) not null,
+    booking_status              number(7),
     id_building                 number(7) not null,
     foreign key(id_building) references building(id),
-    payment_status              number(7) not null
+    payment_status              varchar(255) not null
 );
 
 create table number_building (
@@ -114,7 +113,7 @@ create table ordering_service (
     foreign key(id_guest) references guest(id),
     id_services                 number(7) not null,
     foreign key(id_services) references list_services(id), 
-    paid                        number(7) not null
+    paid                        varchar(255) not null
 );
 
 create table booking_room (
@@ -134,26 +133,11 @@ create table complaints_suggestions(
     constraint complaints_suggestions_id_pk primary key,
     id_booking                  number(7) not null, 
     foreign key(id_booking) references booking_room(id),
-    description                 varchar2(25) not null,
+    description                 varchar2(255) not null,
     date_complaint              date
 );
 
 -- ------------------------------------------
-
-
-create sequence seq_list_services_id
-    increment by 1 
-    start with 1
-    maxvalue 99999
-    nocache
-    nocycle;
-
-create sequence seq_building_service_id
-    increment by 1 
-    start with 1
-    maxvalue 99999
-    nocache
-    nocycle;
 
 create sequence seq_company_id
     increment by 1 
@@ -169,7 +153,7 @@ create sequence seq_guest_id
     nocache
     nocycle;
 
-create sequence seq_application_settlement_id
+create sequence seq_app_settlement_id
     increment by 1 
     start with 1
     maxvalue 999999
