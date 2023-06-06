@@ -14,6 +14,8 @@ const IID IID_IGet_Array = {0x00000101,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0
 const IID IID_ISample_Processing = {0x00000102,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x46}};
 const IID IID_ISumma = {0x00000103,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x46}};
 
+// IUnknown базовый класс, который имеет счетчик ссылок на объект (AddRef)
+// Release уменьшает счётчик и QueryInterface gjkextybt lheujuj bynthatqcf
 
 class ISample_Processing: public IUnknown {
 	public:
@@ -33,7 +35,7 @@ class IGet_Array: public IUnknown {
 class ISumma: public IUnknown {
 	public: 
 	 virtual void __stdcall summ() = 0;
-};
+}; //интерфейс из супера
 
 
 #endif // Interfaces_H_INCLUDED

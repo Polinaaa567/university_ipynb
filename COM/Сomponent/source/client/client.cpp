@@ -11,6 +11,7 @@ int main() {
 	try {
 		// GetClassObjectType GetClassObject;
 
+// сначала связь между сервером и клиентом происходила через менеджер
 		// HINSTANCE h;
 
 		// h = LoadLibrary("./build/manager/main.dll");
@@ -24,17 +25,21 @@ int main() {
 		// {
         // 	throw "No manager method";
       	// }
+// инициализация COM среды
 		CoInitialize(NULL);
-
+	// гуиды серверов
 		// {91A42CAA-5777-4E80-934E-07DE64502FD6}
-		// const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
-		// const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
+		//App.ApplicationЖ const CLSID CLSID_Server = {0x91A42CAA,0x5777,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD6}};
+		//IKS.Application: const CLSID CLSID_Server_2 = {0x91A42CBA,0x2577,0x4E80,{0x93,0x4E,0x07,0xDE,0x64,0x50,0x2F,0xD7}};
 
 		CLSID CLSID_Server_2_ProgID;
 		{
 			const wchar_t* progID = L"IKS.Application";
 			// mbstowcs;
 			//wcstombs
+
+			// CLSIDFromProgID - это метод в технологии COM, который используется для получения идентификатора класса (CLSID) 
+			// объекта COM по его ProgID
 			HRESULT resCLSID_ProgID = CLSIDFromProgID(progID,&CLSID_Server_2_ProgID);
 			if (!(SUCCEEDED(resCLSID_ProgID))) {        
 				throw "No CLSID form ProgID";         
@@ -48,12 +53,21 @@ int main() {
 		IClassFactory* pCF = NULL;
       	
 		// HRESULT resFactory = CoGetClassObject(CLSID_Server2,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
+		// CoGetClassObject получает указатель на фабрику объекта по его идентификкатору
+		
+		// ppv: указатель на переменную, в которую будет записан указатель на созданный объект.
+		
+		// Фабрика классов отвечает за создание экземпляров объектов данного класса.
+		
+		// Функция принимает идентификатор класса объекта и идентификатор интерфейса, который должен быть реализован фабрикой классов, 
+		// и возвращает указатель на объект, реализующий этот интерфейс.
       	HRESULT resFactory = CoGetClassObject(CLSID_Server_2_ProgID,CLSCTX_INPROC_SERVER,NULL,IID_IClassFactory,(void**)&pCF);
       	if (!(SUCCEEDED(resFactory))) {
          	throw "Client::Main::No factory";
       	}
 
 		IGet_Array* pGA = NULL;
+		// CreateInstance получает экземпляр класса 
 		HRESULT resInstance = pCF->CreateInstance(NULL,IID_IGet_Array,(void**)&pGA);
      
       	if (!(SUCCEEDED(resInstance))) {
@@ -63,7 +77,10 @@ int main() {
 		printf("Client::Main::Success IGet_Array: \n");			
 		pGA->InputMas1();
 		pGA->InputMas2();
-
+// QueryInterface получение указателя на другой объект 
+//  Этот метод позволяет коду клиента проверять, 
+// поддерживает ли объект определенный интерфейс,
+//  и получать доступ к этому интерфейсу, если он, конечно, доступен
 		printf("Client::Main::QueryInterface IGet_Array->ISample_Processing\n");			
 		ISample_Processing* pSP = NULL;
 		HRESULT resQuery = pGA->QueryInterface(IID_ISample_Processing,(void**)&pSP);
@@ -84,6 +101,7 @@ int main() {
 		pSP->Corrected_Sample_Variance();
 		is->summ();   
 		
+		// как я поняла, (а я мало что понимаю))), но IDispatch позволяет другим приложениям использовать мой объект
 		IDispatch* pDisp = NULL;
       
 		HRESULT resQueryDisp = pGA->QueryInterface(IID_IDispatch,(void**)&pDisp);
@@ -116,7 +134,7 @@ int main() {
 											0,
 											0,
 										};
-
+// Invoke используется для вызова методов и чтения свойств объекта
 			HRESULT resInvoke = pDisp->Invoke (
 												dispid, // DISPID
 												IID_NULL_,

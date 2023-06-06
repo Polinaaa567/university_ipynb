@@ -1,32 +1,229 @@
+create sequence seq_company_id
+    increment by 1 
+    start with 1
+    maxvalue 999
+    nocache
+    nocycle;
+
+create sequence seq_guest_id
+    increment by 1 
+    start with 1
+    maxvalue 99999
+    nocache
+    nocycle;
+
+create sequence seq_booking_order_id
+    increment by 1 
+    start with 1
+    maxvalue 999999
+    nocache
+    nocycle;
+    
+create sequence seq_building_room_id
+    increment by 1 
+    start with 1
+    maxvalue 999999
+    nocache
+    nocycle;
+
+create sequence seq_ordering_service_id
+    increment by 1 
+    start with 1
+    maxvalue 999999
+    nocache
+    nocycle;
+
+create sequence seq_booking_room_id
+    increment by 1 
+    start with 1
+    maxvalue 999999
+    nocache
+    nocycle;
+
+create sequence seq_complaints_suggestions_id
+    increment by 1 
+    start with 1
+    maxvalue 999999
+    nocache
+    nocycle;
+    
+-- ----------------------------
+-- õğàíåíèå äàííûõ
+-- êëàññ îòåëÿ
+create table hotel_class (
+    id                          number(7)
+    constraint hotel_class_id_pk primary key,
+    class_requirements          varchar2(255) not null
+);
+
+--öåíà çà íîìåğ
+create table price_room (
+    id                          number(7)
+    constraint price_room_id_pk primary key,
+    hotel_class_id              number(7) not null,
+    foreign key(hotel_class_id) references hotel_class(id), 
+    number_beds                 number(7) not null,
+    price                       number(7) not null
+);
+
+--êîğïóñ
+create table building(
+    id                          number(7)
+    constraint building_id_pk primary key,
+    hotel_class_id              number(7) not null,
+    foreign key(hotel_class_id) references hotel_class(id),
+    number_floors               number(7) not null,
+    total_number_rooms          number(7) not null,
+    number_rooms_floor          number(7) not null,
+    number_beds_in_rooms        number(7) not null,
+    address_hotel               varchar2(255) not null
+ );
+
+--íîìåğ â êîğïóñå
+create table building_room (
+    id                          number(7)
+    constraint number_building_id_pk primary key,
+    room_number                 number(7) not null,
+    building_id                 number(7) not null,
+    foreign key(building_id) references building(id)
+);
+
+--ñïèñîê óñëóã
+create table list_services (
+    id                          number(7)
+    constraint list_services_id_pk primary key,
+    name_services               varchar2(255) not null, 
+    price                       number(7) not null
+);
+
+--óñëóãà êîğïóñ
+create table building_service (
+    id                          number(7)
+    constraint building_services_id_pk primary key,
+    services_id                 number(7) not null,
+    foreign key(services_id) references list_services(id), 
+    building_id                 number(7) not null,
+    foreign key(building_id) references building(id),
+    description                 varchar2(255)
+);
+
+--ôèğìà
+create table company (
+    id                          number(7)
+    constraint company_id_pk primary key,
+    name_company                varchar2(255) not null,
+    fname_contact_person        varchar2(255) not null,
+    contract_status             number(8) not null,
+    discription_activity        varchar2(255) not null,
+    sale                        number(7) null
+);
+
+--ïîñòîÿëåö
+create table guest(
+    id                          number(7)
+    constraint guest_id_pk primary key,
+    last_name                   varchar2(255) not null,
+    first_name                  varchar2(255) not null,
+    date_birth                  date not null,
+    gender                      varchar2(255) not null,
+    contacts                    varchar2(255) not null,
+    amount_debt                 number(7) null
+);
+
+--çàÿâêà íà çàñåëåíèå
+create table booking_order(
+    id                          number(7)
+    constraint booking_order_id_pk primary key,
+    guest_id                    number(7),
+    foreign key(guest_id) references guest(id),
+    company_id                  number(7),
+    foreign key(company_id) references company(id),
+    hotel_class_stars           number(7) not null,
+    booking_date                date not null,
+    arrival_date                date not null,
+    departure_date              date not null,
+    number_people               number(7) not null, 
+    number_rooms         		number(7),
+    order_processing_status     varchar2(255) null,
+    building_id                 number(7) null,
+    foreign key(building_id) references building(id),
+    payment_status              varchar2(255) null
+);
+
+--áğîíü íîìåğà
+create table booking_room (
+    id                          number(7)
+    constraint booking_room_id_pk primary key,
+    booking_order_id            number(7) not null, 
+    foreign key(booking_order_id) references booking_order(id),
+    guest_id                    number(7) not null,
+    foreign key(guest_id) references guest(id),
+    room_id                     number(7) not null,
+    foreign key(room_id) references building_room(id)
+);
+
+--çàïèñü æàëîá è ïğåäëîæåíèé
+create table complaints_suggestions(
+    id                          number(7)
+    constraint complaints_suggestions_id_pk primary key,
+    booking_room_id             number(7) not null, 
+    foreign key(booking_room_id) references booking_room(id),
+    description                 varchar2(255) not null,
+    on_date                     date not null
+);
+
+--çàêàç óñëóãè 
+create table ordering_service (
+    id                          number(7)
+    constraint ordering_service_id_pk primary key,
+    on_date                     date not null, 
+    guest_id                    number(7) not null,
+    foreign key(guest_id) references guest(id),
+    services_id                 number(7) not null,
+    foreign key(services_id) references list_services(id), 
+    payment_status              varchar2(255) null
+);
+
+--ñòàòèñòèêà
+create table statistics(
+    id                          number(7)
+    constraint statistics_id_pk primary key,
+    building_id                 number(7) not null,
+    foreign key(building_id) references building(id),
+    number_occupied_rooms       number(7) not null,
+    number_available_rooms      number(7) not null
+);
+
+-- ---------------------------------
 
 insert into hotel_class (id, class_requirements)
-values (1, 'Ğ’Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğ°: Ğ½Ğµ Ğ¼ĞµĞ½ĞµĞµ 2Ñ… Ğ½Ğ° ÑÑ‚Ğ°Ğ¶; Ğ¢ÑƒĞ°Ğ»ĞµÑ‚: 1 Ğ½Ğ° 5 ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚;
-            Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ±ĞµĞ»ÑŒÑ: 1Ñ€Ğ°Ğ· Ğ² 5 Ğ´Ğ½ĞµĞ¹; Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾Ğ»Ğ¾Ñ‚ĞµĞ½ĞµÑ†: 1Ñ€Ğ°Ğ· Ğ² 3 Ğ´Ğ½Ñ;
-            Ğ£Ğ±Ğ¾Ñ€ĞºĞ°: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾');
+values (1, 'Âàííàÿ êîìíàòà: íå ìåíåå 2õ íà ıòàæ; Òóàëåò: 1 íà 5 êîìíàò;
+            Ñìåíà ïîñòåëüíîãî áåëüÿ: 1ğàç â 5 äíåé; Ñìåíà ïîëîòåíåö: 1ğàç â 3 äíÿ;
+            Óáîğêà: åæåäíåíâíî');
 
 insert into hotel_class (id, class_requirements)
-values (2, 'Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; Ğ’Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğ°: Ğ½Ğµ Ğ¼ĞµĞ½ĞµĞµ 2Ñ… Ğ½Ğ° ÑÑ‚Ğ°Ğ¶; Ğ¢ÑƒĞ°Ğ»ĞµÑ‚: 1 Ğ½Ğ° 5 ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚;
-            Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ±ĞµĞ»ÑŒÑ: 1Ñ€Ğ°Ğ· Ğ² 3 Ğ´Ğ½Ñ; Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾Ğ»Ğ¾Ñ‚ĞµĞ½ĞµÑ†: 1Ñ€Ğ°Ğ· Ğ² 3 Ğ´Ğ½Ñ;
-            Ğ£Ğ±Ğ¾Ñ€ĞºĞ°: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾');
+values (2, 'Òåëåôîí: â íîìåğå; Âàííàÿ êîìíàòà: íå ìåíåå 2õ íà ıòàæ; Òóàëåò: 1 íà 5 êîìíàò;
+            Ñìåíà ïîñòåëüíîãî áåëüÿ: 1ğàç â 3 äíÿ; Ñìåíà ïîëîòåíåö: 1ğàç â 3 äíÿ;
+            Óáîğêà: åæåäíåíâíî');
 
 insert into hotel_class (id, class_requirements)
-values (3, 'Ğ¥Ğ¾Ğ»Ğ¾Ğ´Ğ¸Ğ»ÑŒĞ½Ğ¸Ğº: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ’Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğ°: Ğ² ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğµ; Ğ¢ÑƒĞ°Ğ»ĞµÑ‚: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ±ĞµĞ»ÑŒÑ: 1Ñ€Ğ°Ğ· Ğ² 3 Ğ´Ğ½Ñ; Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾Ğ»Ğ¾Ñ‚ĞµĞ½ĞµÑ†: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; 
-            Ğ£Ğ±Ğ¾Ñ€ĞºĞ°: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾');
+values (3, 'Õîëîäèëüíèê: â íîìåğå; Òåëåôîí: â íîìåğå; 
+            Âàííàÿ êîìíàòà: â êîìíàòå; Òóàëåò: â íîìåğå; 
+            Ñìåíà ïîñòåëüíîãî áåëüÿ: 1ğàç â 3 äíÿ; Ñìåíà ïîëîòåíåö: åæåäíåíâíî; 
+            Óáîğêà: åæåäíåíâíî');
 
 insert into hotel_class (id, class_requirements)
-values (4, 'Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ’Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğ°: Ğ² ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğµ; Ğ¢ÑƒĞ°Ğ»ĞµÑ‚: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ±ĞµĞ»ÑŒÑ: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾Ğ»Ğ¾Ñ‚ĞµĞ½ĞµÑ†: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; 
-            Ğ£Ğ±Ğ¾Ñ€ĞºĞ°: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; Ğ¤ĞµĞ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; Ğ¨Ğ°Ğ¼Ğ¿ÑƒĞ½ÑŒ Ğ¸ Ğ¼Ñ‹Ğ»Ğ¾: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ');
+values (4, 'Òåëåôîí: â íîìåğå; 
+            Âàííàÿ êîìíàòà: â êîìíàòå; Òóàëåò: â íîìåğå; 
+            Ñìåíà ïîñòåëüíîãî áåëüÿ: åæåäíåíâíî; Ñìåíà ïîëîòåíåö: åæåäíåíâíî; 
+            Óáîğêà: åæåäíåíâíî; Ôåí: â íîìåğå; Øàìïóíü è ìûëî: â íîìåğå');
 
 
 insert into hotel_class (id, class_requirements)
-values (5, 'Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ’Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğ°: Ğ² ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚Ğµ; Ğ¢ÑƒĞ°Ğ»ĞµÑ‚: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; 
-            Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ±ĞµĞ»ÑŒÑ: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; Ğ¡Ğ¼ĞµĞ½Ğ° Ğ¿Ğ¾Ğ»Ğ¾Ñ‚ĞµĞ½ĞµÑ†: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; 
-            Ğ£Ğ±Ğ¾Ñ€ĞºĞ°: ĞµĞ¶ĞµĞ´Ğ½ĞµĞ½Ğ²Ğ½Ğ¾; Ğ¤ĞµĞ½: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ; Ğ¨Ğ°Ğ¼Ğ¿ÑƒĞ½ÑŒ Ğ¸ Ğ¼Ñ‹Ğ»Ğ¾: Ğ² Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ');
+values (5, 'Òåëåôîí: â íîìåğå; 
+            Âàííàÿ êîìíàòà: â êîìíàòå; Òóàëåò: â íîìåğå; 
+            Ñìåíà ïîñòåëüíîãî áåëüÿ: åæåäíåíâíî; Ñìåíà ïîëîòåíåö: åæåäíåíâíî; 
+            Óáîğêà: åæåäíåíâíî; Ôåí: â íîìåğå; Øàìïóíü è ìûëî: â íîìåğå');
 
 -- -----------------------------------------
 
@@ -80,20 +277,20 @@ values (15, 5, 3, 3350);
 insert into building (id, hotel_class_id, number_floors, total_number_rooms, 
                         number_rooms_floor, number_beds_in_rooms, address_hotel)
 values (1, 2, 3, 9, 
-        3, 1, 'Ğ’Ğ°Ğ½ĞŸĞ¸ÑĞ¾Ğ²ÑĞºĞ¸Ğ¹ Ğ¿ĞµÑ€ĞµÑƒĞ»Ğ¾Ğº 1Ğ°'); -- Ğ½Ğ° ÑÑ‚Ğ°Ğ¶ 3 Ñ‡ĞµĞ»Ğ¾Ğ²ĞµĞº
+        3, 1, 'ÂàíÏèñîâñêèé ïåğåóëîê 1à'); -- íà ıòàæ 3 ÷åëîâåê
         
 insert into building (id, hotel_class_id, number_floors, total_number_rooms, 
                         number_rooms_floor, number_beds_in_rooms, address_hotel)
 values (2, 3, 3, 9, 
-        3, 2, 'ÑƒĞ»Ğ¸Ñ†Ğ° Ğ¡Ñ‚Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ ĞĞ»Ñ…Ğ¸Ğ¼Ğ¸ĞºĞ° 3Ğ±'); -- Ğ½Ğ° ÑÑ‚Ğ°Ğ¶ 6 Ñ‡ĞµĞ»Ğ¾Ğ²ĞµĞº
+        3, 2, 'óëèöà Ñòàëüíîãî Àëõèìèêà 3á'); -- íà ıòàæ 6 ÷åëîâåê
 
 insert into building (id, hotel_class_id, number_floors, total_number_rooms, 
                         number_rooms_floor, number_beds_in_rooms, address_hotel)
 values (3, 4, 3, 9, 
-        3, 3, 'ÑƒĞ»Ğ¸Ñ†Ğ° Ğ’ĞµĞ»Ğ¸ĞºĞ¾Ğ»ĞµĞ¿Ğ½Ğ¾Ğ³Ğ¾ Ğ£ÑÑƒĞ¸ Ğ¢Ğ°ĞºÑƒĞ¼Ğ¸'); -- Ğ½Ğ° ÑÑ‚Ğ°Ğ¶ 9 Ñ‡ĞµĞ»Ğ¾Ğ²ĞµĞº
+        3, 3, 'óëèöà Âåëèêîëåïíîãî Óñóè Òàêóìè'); -- íà ıòàæ 9 ÷åëîâåê
 
 -- --------------------------------------------------------
---Ğ½Ğ¾Ğ¼ĞµÑ€ Ğ² ĞºĞ¾Ñ€Ğ¿ÑƒÑĞµ
+--íîìåğ â êîğïóñå
 
 insert into building_room (id, room_number, building_id)
 values (seq_building_room_id.nextval, 201, 1);
@@ -177,193 +374,193 @@ insert into building_room (id, room_number, building_id)
 values (seq_building_room_id.nextval, 403, 3);
 
 -- ------------------------------------------------------------------
---ÑĞ¿Ğ¸ÑĞ¾Ğº ÑƒÑĞ»ÑƒĞ³
+--ñïèñîê óñëóã
 insert into list_services (id, name_services, price)
-values (1, 'ĞµĞ¶ĞµĞ´Ğ½ĞµĞ²Ğ½Ğ°Ñ ÑƒĞ±Ğ¾Ñ€ĞºĞ°', 0);
+values (1, 'åæåäíåâíàÿ óáîğêà', 0);
 
 insert into list_services (id, name_services, price)
-values (2, 'Ğ¿Ñ€Ğ°Ñ‡ĞµÑ‡Ğ½Ğ°Ñ', 200);
+values (2, 'ïğà÷å÷íàÿ', 200);
 
 insert into list_services (id, name_services, price)
-values (3, 'Ñ…Ğ¸Ğ¼Ñ‡Ğ¸ÑÑ‚ĞºĞ°', 300);
+values (3, 'õèì÷èñòêà', 300);
 
 insert into list_services (id, name_services, price)
-values (4, 'Ğ±Ğ°ÑÑĞµĞ¹Ğ½', 700);
+values (4, 'áàññåéí', 700);
 
 insert into list_services (id, name_services, price)
-values (5, 'ÑĞ°ÑƒĞ½Ğ°', 500);
+values (5, 'ñàóíà', 500);
 
 insert into list_services (id, name_services, price)
-values (6, 'Ğ±Ğ¸Ğ»ÑŒÑÑ€Ğ´', 500);
+values (6, 'áèëüÿğä', 500);
 
 insert into list_services (id, name_services, price)
-values (7, 'Ñ€ĞµÑÑ‚Ğ¾Ñ€Ğ°Ğ½', 400);
+values (7, 'ğåñòîğàí', 400);
 
 insert into list_services (id, name_services, price)
-values (8, 'Ğ±Ğ°Ñ€', 450);
+values (8, 'áàğ', 450);
 
 -- ----------------------------------------------------------
---ÑƒÑĞ»ÑƒĞ³Ğ° ĞºĞ¾Ñ€Ğ¿ÑƒÑ
+--óñëóãà êîğïóñ
 
 insert into building_service (id, services_id, building_id, description)
-values (1, 1, 1, 'Ğ£Ğ±Ğ¾Ñ€ĞºĞ° Ğ½Ğ¾Ğ¼ĞµÑ€Ğ¾Ğ² Ğ¿Ñ€Ğ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ÑÑ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ´ĞµĞ½ÑŒ Ñ 11.00-12.00');
+values (1, 1, 1, 'Óáîğêà íîìåğîâ ïğîâîäèòñÿ êàæäûé äåíü ñ 11.00-12.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (2, 1, 2, 'Ğ£Ğ±Ğ¾Ñ€ĞºĞ° Ğ½Ğ¾Ğ¼ĞµÑ€Ğ¾Ğ² Ğ¿Ñ€Ğ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ÑÑ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ´ĞµĞ½ÑŒ Ñ 10.00-12.00');
+values (2, 1, 2, 'Óáîğêà íîìåğîâ ïğîâîäèòñÿ êàæäûé äåíü ñ 10.00-12.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (3, 1, 3, 'Ğ£Ğ±Ğ¾Ñ€ĞºĞ° Ğ½Ğ¾Ğ¼ĞµÑ€Ğ¾Ğ² Ğ¿Ñ€Ğ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ÑÑ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ´ĞµĞ½ÑŒ Ñ 10.00-12.00');
+values (3, 1, 3, 'Óáîğêà íîìåğîâ ïğîâîäèòñÿ êàæäûé äåíü ñ 10.00-12.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (4, 2, 2, 'ĞŸÑ€Ğ°Ñ‡ĞµÑ‡Ğ½Ğ°Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-11.00 Ğ¸ Ñ 15.00-16.00. -1 ÑÑ‚Ğ°Ğ¶ - Ğ²Ñ…Ğ¾Ğ´ ÑĞ¾ Ğ´Ğ²Ğ¾Ñ€Ğ°');
+values (4, 2, 2, 'Ïğà÷å÷íàÿ ğàáîòàåò ñ 9.00-11.00 è ñ 15.00-16.00. -1 ıòàæ - âõîä ñî äâîğà');
 
 insert into building_service (id, services_id, building_id, description)
-values (5, 2, 3, 'ĞŸÑ€Ğ°Ñ‡ĞµÑ‡Ğ½Ğ°Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-11.00 Ğ¸ Ñ 15.00-17.00. -1 ÑÑ‚Ğ°Ğ¶');
+values (5, 2, 3, 'Ïğà÷å÷íàÿ ğàáîòàåò ñ 9.00-11.00 è ñ 15.00-17.00. -1 ıòàæ');
 
 insert into building_service (id, services_id, building_id, description)
-values (6, 3, 2, 'Ğ¥Ğ¸Ğ¼Ñ‡Ğ¸ÑÑ‚ĞºĞ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-11.00 Ğ¸ Ñ 15.00-16.00. -1 ÑÑ‚Ğ°Ğ¶ - Ğ²Ñ…Ğ¾Ğ´ ÑĞ¾ Ğ´Ğ²Ğ¾Ñ€Ğ°');
+values (6, 3, 2, 'Õèì÷èñòêà ğàáîòàåò ñ 9.00-11.00 è ñ 15.00-16.00. -1 ıòàæ - âõîä ñî äâîğà');
 
 insert into building_service (id, services_id, building_id, description)
-values (7, 3, 3, 'Ğ¥Ğ¸Ğ¼Ñ‡Ğ¸ÑÑ‚ĞºĞ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-11.00 Ğ¸ Ñ 15.00-17.00. -1 ÑÑ‚Ğ°Ğ¶');
+values (7, 3, 3, 'Õèì÷èñòêà ğàáîòàåò ñ 9.00-11.00 è ñ 15.00-17.00. -1 ıòàæ');
 
 insert into building_service (id, services_id, building_id, description)
-values (8, 4, 3, 'Ğ‘Ğ°ÑÑĞµĞ¹Ğ½ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-11.00. Ğ Ğ°ÑĞ¿Ğ¾Ğ»Ğ¾Ğ¶ĞµĞ½ Ğ½Ğ° ĞºÑ€Ñ‹ÑˆĞµ ĞºĞ¾Ñ€Ğ¿ÑƒÑĞ°');
+values (8, 4, 3, 'Áàññåéí ğàáîòàåò ñ 9.00-11.00. Ğàñïîëîæåí íà êğûøå êîğïóñà');
 
 insert into building_service (id, services_id, building_id, description)
-values (9, 5, 3, 'Ğ¡Ğ°ÑƒĞ½Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ 16.00-23.00. Ğ Ğ°ÑĞ¿Ğ¾Ğ»Ğ¾Ğ¶ĞµĞ½Ğ° Ğ½Ğ° ĞºÑ€Ñ‹ÑˆĞµ ĞºĞ¾Ñ€Ğ¿ÑƒÑĞ°');
+values (9, 5, 3, 'Ñàóíà ğàáîòàåò 16.00-23.00. Ğàñïîëîæåíà íà êğûøå êîğïóñà');
 
 insert into building_service (id, services_id, building_id, description)
-values (10, 6, 3, 'Ğ‘Ğ¸Ğ»ÑŒÑÑ€Ğ´ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 9.00-00.00 -1 ÑÑ‚Ğ°Ğ¶ ');
+values (10, 6, 3, 'Áèëüÿğä ğàáîòàåò ñ 9.00-00.00 -1 ıòàæ ');
 
 insert into building_service (id, services_id, building_id, description)
-values (11, 7, 2, 'Ğ ĞµÑÑ‚Ğ¾Ñ€Ğ°Ğ½ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 10.00-15.00 Ğ¸ Ñ 16.00-20.00');
+values (11, 7, 2, 'Ğåñòîğàí ğàáîòàåò ñ 10.00-15.00 è ñ 16.00-20.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (12, 7, 3, 'Ğ ĞµÑÑ‚Ğ¾Ñ€Ğ°Ğ½ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 10.00-15.00, Ğ¸ Ñ 16.00-20.00');
+values (12, 7, 3, 'Ğåñòîğàí ğàáîòàåò ñ 10.00-15.00, è ñ 16.00-20.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (13, 8, 1, 'Ğ‘Ğ°Ñ€ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 18.00-20.00');
+values (13, 8, 1, 'Áàğ ğàáîòàåò ñ 18.00-20.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (14, 8, 2, 'Ğ‘Ğ°Ñ€ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 18.00-20.00');
+values (14, 8, 2, 'Áàğ ğàáîòàåò ñ 18.00-20.00');
 
 insert into building_service (id, services_id, building_id, description)
-values (15, 8, 3, 'Ğ‘Ğ°Ñ€ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚ Ñ 18.00-20.00');
+values (15, 8, 3, 'Áàğ ğàáîòàåò ñ 18.00-20.00');
 
 -- --------------------------------------------
---Ñ„Ğ¸Ñ€Ğ¼Ğ°
+--ôèğìà
 insert into company (id, name_company, fname_contact_person, contract_status, discription_activity, sale)
-values (seq_company_id.nextval, 'Ğ§ĞµĞ±ÑƒÑ€Ğ°ÑˆĞºĞ°', 'ĞšÑ€Ğ¾ĞºĞ¾Ğ´Ğ¸Ğ» Ğ“ĞµĞ½Ğ½Ğ°Ğ´Ğ¸Ğ¹', 1, 'ĞŸÑ€Ğ¾Ğ²Ğ¾Ğ´ÑÑ‚ Ğ¼ĞµĞ¶Ğ´ÑƒĞ½Ğ°Ñ€Ğ¾Ğ´Ğ½Ñ‹Ğµ ÑĞ¸Ğ¼Ğ¿Ğ¾Ğ·Ğ¸ÑƒĞ¼Ñ‹', 10);
+values (seq_company_id.nextval, '×åáóğàøêà', 'Êğîêîäèë Ãåííàäèé', 1, 'Ïğîâîäÿò ìåæäóíàğîäíûå ñèìïîçèóìû', 10);
 
 insert into company (id, name_company, fname_contact_person, contract_status, discription_activity, sale)
-values (seq_company_id.nextval, 'ĞšÑ€Ñ‹ÑĞºĞ°-Ğ›Ğ°Ñ€Ğ¸ÑĞºĞ°', 'Ğ¨Ğ°Ğ¿Ğ¾ĞºĞ»ÑĞº', 0, 'ĞŸÑ€Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ ĞºĞ°Ñ€Ğ½Ğ°Ğ²Ğ°Ğ»Ğ¾Ğ²', 2);
+values (seq_company_id.nextval, 'Êğûñêà-Ëàğèñêà', 'Øàïîêëÿê', 0, 'Ïğîâåäåíèå êàğíàâàëîâ', 2);
 
 insert into company (id, name_company, fname_contact_person, contract_status, discription_activity, sale)
-values (seq_company_id.nextval, 'Ğ—Ğ½Ğ°Ğ¹ĞºĞ°', 'ĞĞµĞ·Ğ½Ğ°Ğ¹ĞºĞ°', 1, 'Ğ¢ÑƒÑ€Ğ¸ÑÑ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ñ„Ğ¸Ñ€Ğ¼Ğ°', 5);
+values (seq_company_id.nextval, 'Çíàéêà', 'Íåçíàéêà', 1, 'Òóğèñòè÷åñêàÿ ôèğìà', 5);
 
 -- --------------------------------------------
--- Ğ¿Ğ¾ÑÑ‚Ğ¾ÑĞ»ĞµÑ†
+-- ïîñòîÿëåö
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ§ĞµÑ€ĞµĞ²Ğ°Ñ‚Ñ‹Ğ¹', 'Ğ’Ğ»Ğ°Ğ´Ğ¸ÑĞ»Ğ°Ğ²',to_date('28-07-1996','dd-mm-yyyy') ,'Ğœ', '89546742345');
+values (seq_guest_id.nextval, '×åğåâàòûé', 'Âëàäèñëàâ',to_date('28-07-1996','dd-mm-yyyy') ,'Ì', '89546742345');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ¨ĞµĞ¿Ñ', 'ĞĞ»ĞµĞ³',to_date('29-04-1998', 'dd-mm-yyyy') ,'Ğœ', '89164130202');
+values (seq_guest_id.nextval, 'Øåïñ', 'Îëåã',to_date('29-04-1998', 'dd-mm-yyyy') ,'Ì', '89164130202');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ”Ğ¶ĞµĞ±Ğ¸ÑĞ°ÑˆĞ²Ğ¸Ğ»Ğ¸', 'Ğ›Ğ¸Ğ½Ğ°',to_date('14-08-1985', 'dd-mm-yyyy') ,'Ğ–', '84953241897');
+values (seq_guest_id.nextval, 'Äæåáèñàøâèëè', 'Ëèíà',to_date('14-08-1985', 'dd-mm-yyyy') ,'Æ', '84953241897');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ¨ĞµĞ¿Ñ', 'ĞĞ»ĞµĞºÑĞ°Ğ½Ğ´Ñ€',to_date('26-11-1986', 'dd-mm-yyyy') ,'Ğœ', '89546026745');
+values (seq_guest_id.nextval, 'Øåïñ', 'Àëåêñàíäğ',to_date('26-11-1986', 'dd-mm-yyyy') ,'Ì', '89546026745');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ¨ĞµĞ²Ñ‡ĞµĞ½ĞºĞ¾', 'ĞĞ°Ğ´ĞµĞ¶Ğ´Ğ°',to_date('25-02-1964', 'dd-mm-yyyy'),'Ğ–', '89832201890');
+values (seq_guest_id.nextval, 'Øåâ÷åíêî', 'Íàäåæäà',to_date('25-02-1964', 'dd-mm-yyyy'),'Æ', '89832201890');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ Ğ°Ğ¹Ğ´Ğ¾Ñ', 'Ğ’Ğ¸ĞºÑ‚Ğ¾Ñ€Ğ¸Ñ',to_date('27-12-1976', 'dd-mm-yyyy') ,'Ğ–', '84956669860');
+values (seq_guest_id.nextval, 'Ğàéäîñ', 'Âèêòîğèÿ',to_date('27-12-1976', 'dd-mm-yyyy') ,'Æ', '84956669860');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ Ğ¾Ğ¼Ğ°Ğ½Ğ¾Ğ²Ğ°', 'ĞœĞ°Ñ€ÑŒÑĞ½Ğ°',to_date('31-08-1979', 'dd-mm-yyyy') ,'Ğ–', '895467426709');
+values (seq_guest_id.nextval, 'Ğîìàíîâà', 'Ìàğüÿíà',to_date('31-08-1979', 'dd-mm-yyyy') ,'Æ', '895467426709');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ“ĞµÑ†Ğ°Ñ‚Ğ¸', 'ĞšĞ¾Ğ½ÑÑ‚Ğ°Ğ½Ñ‚Ğ¸Ğ½',to_date('10-07-1987', 'dd-mm-yyyy') ,'Ğœ', '84957766610');
+values (seq_guest_id.nextval, 'Ãåöàòè', 'Êîíñòàíòèí',to_date('10-07-1987', 'dd-mm-yyyy') ,'Ì', '84957766610');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'ĞœĞ°Ñ‚Ğ²ĞµĞµĞ²', 'Ğ”Ğ¼Ğ¸Ñ‚Ñ€Ğ¸Ğ¹',to_date('15-07-1997', 'dd-mm-yyyy'),'Ğœ', '89546746745');
+values (seq_guest_id.nextval, 'Ìàòâååâ', 'Äìèòğèé',to_date('15-07-1997', 'dd-mm-yyyy'),'Ì', '89546746745');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ‘Ğ°ÑˆĞ°Ñ€Ğ¾Ğ²', 'ĞœĞ°Ñ€Ğ°Ñ‚',to_date('22-07-1974', 'dd-mm-yyyy') ,'Ğœ', '89657843254');
+values (seq_guest_id.nextval, 'Áàøàğîâ', 'Ìàğàò',to_date('22-07-1974', 'dd-mm-yyyy') ,'Ì', '89657843254');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ›Ğ°Ñ€Ğ¸Ğ¾Ğ½Ğ¾Ğ²', 'Ğ˜Ğ»ÑŒÑ',to_date('28-10-1983', 'dd-mm-yyyy') ,'Ğœ', '84956784321');
+values (seq_guest_id.nextval, 'Ëàğèîíîâ', 'Èëüÿ',to_date('28-10-1983', 'dd-mm-yyyy') ,'Ì', '84956784321');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ’Ğ¾Ñ€Ğ¾Ñ‚Ğ½Ğ¸ĞºĞ¾Ğ²Ğ°', 'ĞĞ°Ñ‚Ğ°Ğ»ÑŒÑ', to_date('10-04-1976', 'dd-mm-yyyy') ,'Ğ–', '84622636095');
+values (seq_guest_id.nextval, 'Âîğîòíèêîâà', 'Íàòàëüÿ', to_date('10-04-1976', 'dd-mm-yyyy') ,'Æ', '84622636095');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ¥ĞµĞ³Ğ°Ğ¹', 'Ğ›Ğ¸Ğ»Ğ¸Ñ',to_date('04-07-1965', 'dd-mm-yyyy') ,'Ğ–', '85222043399');
+values (seq_guest_id.nextval, 'Õåãàé', 'Ëèëèÿ',to_date('04-07-1965', 'dd-mm-yyyy') ,'Æ', '85222043399');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ“Ğ¸Ğ±ĞµÑ€Ñ‚', 'Ğ’Ğ¸Ñ‚Ğ°Ğ»Ğ¸Ğ¹',to_date('21-03-1988', 'dd-mm-yyyy') ,'Ğœ', '83513477192');
+values (seq_guest_id.nextval, 'Ãèáåğò', 'Âèòàëèé',to_date('21-03-1988', 'dd-mm-yyyy') ,'Ì', '83513477192');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'ĞšĞµÑ€Ñ€Ğ¾', 'ĞœÑÑ€Ğ¸Ğ»Ğ¸Ğ½',to_date('18-09-1988', 'dd-mm-yyyy') ,'Ğ–', '83697350981');
+values (seq_guest_id.nextval, 'Êåğğî', 'Ìığèëèí',to_date('18-09-1988', 'dd-mm-yyyy') ,'Æ', '83697350981');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'ĞšÑƒĞ·Ğ½ĞµÑ†Ğ¾Ğ²Ğ°', 'ĞĞ¸ĞºĞ¾Ğ»ÑŒ',to_date('15-09-1988', 'dd-mm-yyyy') ,'Ğ–', '84084684617');
+values (seq_guest_id.nextval, 'Êóçíåöîâà', 'Íèêîëü',to_date('15-09-1988', 'dd-mm-yyyy') ,'Æ', '84084684617');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'ĞĞ¾Ñ€ÑƒĞ·Ğ¸', 'ĞœĞ¾Ñ…ÑĞµĞ½',to_date('31-01-1960', 'dd-mm-yyyy') ,'Ğœ', '81259079106');
+values (seq_guest_id.nextval, 'Íîğóçè', 'Ìîõñåí',to_date('31-01-1960', 'dd-mm-yyyy') ,'Ì', '81259079106');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ’Ğ°Ğ½Ğ³', 'Ğ”Ğ¶ÑƒĞ»Ğ¸Ñ',to_date('19-10-1982', 'dd-mm-yyyy') ,'Ğ–', '84025378515');
+values (seq_guest_id.nextval, 'Âàíã', 'Äæóëèÿ',to_date('19-10-1982', 'dd-mm-yyyy') ,'Æ', '84025378515');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ“Ğ¾Ğ»ÑƒĞ½Ğ¾Ğ²Ğ°', 'Ğ•Ğ»ĞµĞ½Ğ°',to_date('08-04-1968', 'dd-mm-yyyy') ,'Ğ–', '8095819428');
+values (seq_guest_id.nextval, 'Ãîëóíîâà', 'Åëåíà',to_date('08-04-1968', 'dd-mm-yyyy') ,'Æ', '8095819428');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'Ğ¡Ğ¾Ñ‚Ğ½Ğ¸ĞºĞ¾Ğ²Ğ°', 'Ğ’ĞµÑ€Ğ°',to_date('19-07-1960', 'dd-mm-yyyy') ,'Ğ–', '8253204211');
+values (seq_guest_id.nextval, 'Ñîòíèêîâà', 'Âåğà',to_date('19-07-1960', 'dd-mm-yyyy') ,'Æ', '8253204211');
 
 insert into guest (id, last_name, first_name,date_birth, gender, contacts)
-values (seq_guest_id.nextval, 'ĞŸĞ°Ñ…Ğ¾Ğ¼Ğ¾Ğ²', 'Ğ¡ĞµÑ€Ğ³ĞµĞ¹',to_date('04-11-1966', 'dd-mm-yyyy') ,'Ğœ', '8343965091');
+values (seq_guest_id.nextval, 'Ïàõîìîâ', 'Ñåğãåé',to_date('04-11-1966', 'dd-mm-yyyy') ,'Ì', '8343965091');
 
 update guest
 set amount_debt = 0
 where amount_debt is null;
 
 -- -----------------------------------------------------
---Ğ·Ğ°ÑĞ²ĞºĞ° Ğ½Ğ° Ğ·Ğ°ÑĞµĞ»ĞµĞ½Ğ¸Ğµ
+--çàÿâêà íà çàñåëåíèå
 insert into booking_order(id, company_id, hotel_class_stars, booking_date, arrival_date, 
                             departure_date, number_people, number_rooms, 
                             order_processing_status, building_id) 
-values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ğ·Ğ½Ğ°Ğ¹ĞºĞ°'), 3,
+values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'çíàéêà'), 3,
         to_date('31-05-2023', 'dd-mm-yyyy'), to_date('27-06-2023', 'dd-mm-yyyy'),  
-        to_date('30-06-2023', 'dd-mm-yyyy'), 6, 3, 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚', 2);
+        to_date('30-06-2023', 'dd-mm-yyyy'), 6, 3, 'ïğèíÿò', 2);
         
 insert into booking_order(id, company_id, hotel_class_stars, booking_date, arrival_date, 
                             departure_date, number_people, number_rooms, 
                             order_processing_status, building_id) 
-values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ğ·Ğ½Ğ°Ğ¹ĞºĞ°'), 2,
+values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'çíàéêà'), 2,
         to_date('10-06-2023', 'dd-mm-yyyy'), to_date('16-06-2023', 'dd-mm-yyyy'),  
-        to_date('03-07-2023', 'dd-mm-yyyy'), 4, 4, 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚', 1);
+        to_date('03-07-2023', 'dd-mm-yyyy'), 4, 4, 'ïğèíÿò', 1);
         
 insert into booking_order(id, company_id, hotel_class_stars, booking_date, arrival_date, 
                             departure_date, number_people, number_rooms, 
                             order_processing_status, building_id) 
-values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ñ‡ĞµĞ±ÑƒÑ€Ğ°ÑˆĞºĞ°'), 2,
+values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like '÷åáóğàøêà'), 2,
         to_date('10-06-2023', 'dd-mm-yyyy'), to_date('16-06-2023', 'dd-mm-yyyy'),  
-        to_date('03-07-2023', 'dd-mm-yyyy'), 5, 5, 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚', 1);
+        to_date('03-07-2023', 'dd-mm-yyyy'), 5, 5, 'ïğèíÿò', 1);
         
 insert into booking_order(id, company_id, hotel_class_stars, booking_date, arrival_date, 
                             departure_date, number_people, number_rooms, 
                             order_processing_status, building_id) 
-values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ñ‡ĞµĞ±ÑƒÑ€Ğ°ÑˆĞºĞ°'), 4,
+values (seq_booking_order_id.nextval, (select id from company where lower(name_company) like '÷åáóğàøêà'), 4,
         to_date('31-05-2023', 'dd-mm-yyyy'), to_date('25-06-2023', 'dd-mm-yyyy'),  
-        to_date('27-06-2023', 'dd-mm-yyyy'), 5, 2, 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚', 3);
+        to_date('27-06-2023', 'dd-mm-yyyy'), 5, 2, 'ïğèíÿò', 3);
         
 insert into booking_order(id, guest_id, hotel_class_stars, booking_date, arrival_date, 
                             departure_date, number_people, number_rooms) 
-values (seq_booking_order_id.nextval, (select id from guest where lower(last_name) like 'Ğ±Ğ°ÑˆĞ°Ñ€Ğ¾Ğ²'), 3,
+values (seq_booking_order_id.nextval, (select id from guest where lower(last_name) like 'áàøàğîâ'), 3,
         to_date('27-05-2023', 'dd-mm-yyyy'), to_date('23-06-2023', 'dd-mm-yyyy'),  
         to_date('02-07-2023', 'dd-mm-yyyy'), 1, 1);
         
@@ -371,7 +568,7 @@ select *
 from booking_order;
 -- ----------------------------
 
--- min Ğ½Ğµ Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°Ğ½Ğ½Ñ‹Ğ¹
+-- min íå îáğàáîòàííûé
 create or replace view current_b_ord_id (id)
 as select MIN(id) 
     from booking_order 
@@ -379,12 +576,12 @@ as select MIN(id)
 
 select * from current_b_ord_id;
 
--- Ğ¾Ñ‚Ğ±Ğ¾Ñ€ĞºĞ° ĞºĞ¾Ñ€Ğ¿ÑƒÑĞ¾Ğ² Ğ¿Ğ¾ Ğ·Ğ²Ñ‘Ğ·Ğ´Ğ½Ğ¾ÑÑ‚Ğ¸
+-- îòáîğêà êîğïóñîâ ïî çâ¸çäíîñòè
 --select *
 --from booking_order bo join current_b_ord_id cbo on bo.id = cbo.id
 --join building b on bo.hotel_class_stars = b.hotel_class_id;
 
--- Ğ¸ Ğ¿Ğ¾ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğ¹ Ğ¼ĞµÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ¸ ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚ ceil(number_people / number_rooms) Ğ´Ğ»Ñ Ñ€Ğ°ÑÑĞµĞ»ĞµĞ½Ğ¸Ñ Ğ»ÑĞ´ĞµĞ¹
+-- è ïî ìèíèìàëüíîé ìåñòíîñòíîñòè êîìíàò ceil(number_people / number_rooms) äëÿ ğàññåëåíèÿ ëşäåé
 create or replace view processing_filter_limits 
 as select bo.id ord_id, bo.guest_id, bo.company_id,
             b.id proposed_building_id, b.hotel_class_id, bo.arrival_date, bo.departure_date,
@@ -397,22 +594,22 @@ as select bo.id ord_id, bo.guest_id, bo.company_id,
 select *
 from processing_filter_limits;
 
--- ĞºĞ¾Ğ»-Ğ²Ğ¾ ÑĞ²Ğ¾Ğ±Ğ¾Ğ´Ğ½Ñ‹Ñ… Ğ½Ğ¾Ğ¼ĞµÑ€Ğ¾Ğ² Ğ½Ğ° Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ´Ğ°Ñ‚Ñ‹ 
--- Ğ¸Ñ‰Ñƒ Ğ½Ğ¾Ğ¼ĞµÑ€Ğ° ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ Ğ·Ğ°Ğ½ÑÑ‚Ñ‹ Ğ½Ğ° Ğ´Ğ°Ñ‚Ñ‹ Ğ·Ğ°ĞµĞ·Ğ´Ğ° Ğ¸ Ğ¾Ñ‚Ğ½Ğ¸Ğ¼Ğ°Ñ Ğ¾Ñ‚ Ğ¾Ğ±Ñ‰ĞµĞ³Ğ¾ ĞºĞ¾Ğ»-Ğ²Ğ° Ğ½Ğ¾Ğ¼ĞµÑ€Ğ¾Ğ² Ğ² ĞºĞ¾Ñ€Ğ¿ÑƒÑĞµ
+-- êîë-âî ñâîáîäíûõ íîìåğîâ íà âûáğàííûå äàòû 
+-- èùó íîìåğà êîòîğûå çàíÿòû íà äàòû çàåçäà è îòíèìàş îò îáùåãî êîë-âà íîìåğîâ â êîğïóñå
 
 create or replace view free_rooms_order_dates
 as select b.id building_id, b.hotel_class_id, b.total_number_rooms, b.number_beds_in_rooms, 
         nvl(b_num_booked_rooms.num_booked_rooms, 0) num_booked_rooms,
         b.total_number_rooms - nvl(b_num_booked_rooms.num_booked_rooms, 0) num_free_rooms
     from building b left join (
-    --Ğ¿Ğ¾Ğ´ÑÑ‡Ñ‘Ñ‚ ĞºĞ¾Ğ»-Ğ²Ğ° ĞºĞ¾Ğ¼Ğ½Ğ°Ñ‚,ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ Ğ·Ğ°Ğ½ÑÑ‚Ñ‹ Ğ½Ğ° ÑÑ‚Ğ¸ Ñ‡Ğ¸ÑĞ»Ğ° Ğ´Ğ»Ñ ĞºĞ°Ğ¶Ğ´Ğ¾Ğ³Ğ¾ ÑÑƒÑ‰ĞµÑÑ‚Ğ²ÑƒÑÑ‰ĞµĞ³Ğ¾ ĞºĞ¾Ñ€Ğ¿ÑƒÑĞ° 
+    --ïîäñ÷¸ò êîë-âà êîìíàò,êîòîğûå çàíÿòû íà ıòè ÷èñëà äëÿ êàæäîãî ñóùåñòâóşùåãî êîğïóñà 
             select bpo.building_id, nvl(sum(bpo.number_rooms), 0) num_booked_rooms,
                     bo.arrival_date, bo.departure_date
             from booking_order bpo cross join booking_order bo
                 join current_b_ord_id cbo on bo.id = cbo.id 
-            where lower(bpo.order_processing_status) like 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚'
+            where lower(bpo.order_processing_status) like 'ïğèíÿò'
             and not (
-                bo.arrival_date >= bpo.departure_date -- Ğ´Ğ°Ñ‚Ğ° Ğ¿Ñ€Ğ¸ĞµĞ·Ğ´Ğ° Ğ¸ Ğ¾Ñ‚ÑŠĞµĞ·Ğ´Ğ° Ğ¼Ğ¾Ğ¶ĞµÑ‚ ÑĞ¾Ğ²Ğ¿Ğ°Ğ´Ğ°Ñ‚ÑŒ
+                bo.arrival_date >= bpo.departure_date -- äàòà ïğèåçäà è îòúåçäà ìîæåò ñîâïàäàòü
                 or bo.departure_date <= bpo.arrival_date 
         )
         group by bpo.building_id,  bo.arrival_date, bo.departure_date
@@ -442,8 +639,8 @@ select bo.id, case
                     (select id 
                     from company 
                     where contract_status = 1))
-    then 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚'
-    else 'Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½'
+    then 'ïğèíÿò'
+    else 'îòêëîíåí'
     end status, 
 case 
     when bopv.proposed_building_id is not null and 
@@ -463,8 +660,8 @@ update booking_order bo
 set bo.order_processing_status = case when
         (select proposed_building_id from building_view_for_id) is not null and 
         (bo.guest_id in (select id from guest) OR bo.company_id in (select id from company where contract_status = 1))
-        then 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚'
-        else 'Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½'
+        then 'ïğèíÿò'
+        else 'îòêëîíåí'
     end, 
     bo.building_id = case when
         (select proposed_building_id from building_view_for_id) is not null and 
@@ -482,7 +679,7 @@ insert into booking_order (
     booking_date, arrival_date, 
     departure_date, number_people, number_rooms
 ) values (
-	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ğ½ĞµĞ·Ğ½Ğ°Ğ¹ĞºĞ°'), 2,
+	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'íåçíàéêà'), 2,
 	to_date('29-05-2023', 'dd-mm-yyyy'), to_date('19-06-2023', 'dd-mm-yyyy'), 
 	to_date('25-06-2023', 'dd-mm-yyyy'), 3, 3
 );
@@ -491,7 +688,7 @@ insert into booking_order (
     booking_date, arrival_date, 
     departure_date, number_people, number_rooms
 ) values( 
-	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ğ½ĞµĞ·Ğ½Ğ°Ğ¹ĞºĞ°'), 4, 
+	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'íåçíàéêà'), 4, 
 	to_date('28-05-2023', 'dd-mm-yyyy'), to_date('23-06-2023', 'dd-mm-yyyy'), 
 	to_date('29-06-2023', 'dd-mm-yyyy'), 8, 8
 );
@@ -500,7 +697,7 @@ insert into booking_order (
     booking_date, arrival_date, 
     departure_date, number_people, number_rooms
 ) values( 
-	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'Ğ½ĞµĞ·Ğ½Ğ°Ğ¹ĞºĞ°'), 2,	
+	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'íåçíàéêà'), 2,	
 	to_date('29-05-2023', 'dd-mm-yyyy'), to_date('19-06-2023', 'dd-mm-yyyy'), 
 	to_date('25-06-2023', 'dd-mm-yyyy'), 6, 2
 );
@@ -509,7 +706,7 @@ insert into booking_order (
     booking_date, arrival_date, 
     departure_date, number_people, number_rooms
 ) values( 
-	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'ĞºÑ€Ñ‹ÑĞºĞ°-Ğ»Ğ°Ñ€Ğ¸ÑĞºĞ°'), 4,  
+	seq_booking_order_id.nextval, (select id from company where lower(name_company) like 'êğûñêà-ëàğèñêà'), 4,  
 	to_date('31-05-2023', 'dd-mm-yyyy'), to_date('07-06-2023', 'dd-mm-yyyy'),  
 	to_date('10-06-2023', 'dd-mm-yyyy'), 5, 2
 );
@@ -528,78 +725,132 @@ insert into booking_order (
     booking_date, arrival_date, 
     departure_date, number_people, number_rooms
 ) values (
-	seq_booking_order_id.nextval, (select id from guest where lower(last_name) like 'Ğ¿Ğ°Ñ…Ğ¾Ğ¼Ğ¾Ğ²') , 2,
+	seq_booking_order_id.nextval, (select id from guest where lower(last_name) like 'ïàõîìîâ') , 2,
 	to_date('25-05-2023', 'dd-mm-yyyy'), to_date('05-06-2023', 'dd-mm-yyyy'), 
 	to_date('16-06-2023', 'dd-mm-yyyy'), 1, 1);
     
     
 update booking_order 
-set payment_status = 'Ğ¾Ğ¿Ğ»Ğ°Ñ‡ĞµĞ½'
+set payment_status = 'îïëà÷åí'
 where id = 5;
 
 update booking_order 
-set payment_status = 'Ğ¾Ğ¿Ğ»Ğ°Ñ‡ĞµĞ½'
+set payment_status = 'îïëà÷åí'
 where id = 2 or id = 3;
 
 select * 
 from booking_order;
 
---Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ ÑÑ‚Ğ°Ñ‚ÑƒÑĞ° Ğ¾Ğ¿Ğ»Ğ°Ñ‚Ñ‹ Ğ´Ğ»Ñ Ğ²ÑĞµÑ… Ğ·Ğ°ĞºĞ°Ğ·Ğ¾Ğ², Ğ³Ğ´Ğµ Ñ€Ğ°Ğ·Ğ½Ğ¸Ñ†Ğ° Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ´Ğ½ÑĞ¼Ğ¸ Ğ¼ĞµĞ½ÑŒÑˆĞµ Ğ»Ğ¸Ğ±Ğ¾ Ñ€Ğ°Ğ²Ğ½Ğ° 7
+--îáíîâëåíèå ñòàòóñà îïëàòû äëÿ âñåõ çàêàçîâ, ãäå ğàçíèöà ìåæäó äíÿìè ìåíüøå ëèáî ğàâíà 7
 update booking_order
-set payment_status = 'Ğ¾Ğ¿Ğ»Ğ°Ñ‡ĞµĞ½'
+set payment_status = 'îïëà÷åí'
 where ((trunc(arrival_date) - trunc(sysdate) between 0 and 7)
 or (trunc(arrival_date) - trunc(booking_date) between 0 and 7 )) 
-and order_processing_status like 'Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚';
+and order_processing_status like 'ïğèíÿò';
 
 select * 
 from booking_order;
 
 -- ------------------------------------------------------------------------
---Ğ±Ñ€Ğ¾Ğ½ÑŒ Ğ½Ğ¾Ğ¼ĞµÑ€Ğ°
+--áğîíü íîìåğà
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'Ñ‡ĞµÑ€ĞµĞ²Ğ°Ñ‚Ñ‹Ğ¹' 
-                and  lower(first_name) like 'Ğ²Ğ»Ğ°Ğ´Ğ¸ÑĞ»Ğ°Ğ²'), 1);
+values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like '÷åğåâàòûé' 
+                and  lower(first_name) like 'âëàäèñëàâ'), 1);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'Ğ´Ğ¶ĞµĞ±Ğ¸ÑĞ°ÑˆĞ²Ğ¸Ğ»Ğ¸'
-                and  lower(first_name) like 'Ğ»Ğ¸Ğ½Ğ°'), 2);
+values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'äæåáèñàøâèëè'
+                and  lower(first_name) like 'ëèíà'), 2);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'Ñ€Ğ¾Ğ¼Ğ°Ğ½Ğ¾Ğ²Ğ°' 
-                and  lower(first_name) like 'Ğ¼Ğ°Ñ€ÑŒÑĞ½Ğ°'), 3);
+values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'ğîìàíîâà' 
+                and  lower(first_name) like 'ìàğüÿíà'), 3);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'Ğ³ĞµÑ†Ğ°Ñ‚Ğ¸'
-                and lower(first_name) like 'ĞºĞ¾Ğ½ÑÑ‚Ğ°Ğ½Ñ‚Ğ¸Ğ½'), 4);
+values (seq_booking_room_id.nextval, 2, (select id from guest where lower(last_name) like 'ãåöàòè'
+                and lower(first_name) like 'êîíñòàíòèí'), 4);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values(seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'ÑˆĞµĞ¿Ñ' 
-                and  lower(first_name) like 'Ğ¾Ğ»ĞµĞ³'), 5);
+values(seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'øåïñ' 
+                and  lower(first_name) like 'îëåã'), 5);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values(seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'ÑˆĞµĞ¿Ñ' 
-                and  lower(first_name) like 'Ğ°Ğ»ĞµĞºÑĞ°Ğ½Ğ´Ñ€'), 6);
+values(seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'øåïñ' 
+                and  lower(first_name) like 'àëåêñàíäğ'), 6);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'Ñ€Ğ°Ğ¹Ğ´Ğ¾Ñ' 
-                and  lower(first_name) like 'Ğ²Ğ¸ĞºÑ‚Ğ¾Ñ€Ğ¸Ñ'), 7);
+values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'ğàéäîñ' 
+                and  lower(first_name) like 'âèêòîğèÿ'), 7);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'ÑˆĞµĞ²Ñ‡ĞµĞ½ĞºĞ¾' 
-                and  lower(first_name) like 'Ğ½Ğ°Ğ´ĞµĞ¶Ğ´Ğ°'), 8);
+values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'øåâ÷åíêî' 
+                and  lower(first_name) like 'íàäåæäà'), 8);
 
 insert into booking_room (id, booking_order_id, guest_id, room_id)
-values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'Ğ¼Ğ°Ñ‚Ğ²ĞµĞµĞ²' 
-                and lower(first_name) like 'Ğ´Ğ¼Ğ¸Ñ‚Ñ€Ğ¸Ğ¹'), 9);
+values (seq_booking_room_id.nextval, 3, (select id from guest where lower(last_name) like 'ìàòâååâ' 
+                and lower(first_name) like 'äìèòğèé'), 9);
 
 -- -----------------------------
---Ğ·Ğ°Ğ¿Ğ¸ÑÑŒ Ğ¶Ğ°Ğ»Ğ¾Ğ± Ğ¸ Ğ¿Ñ€ĞµĞ´Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğ¹
+--çàïèñü æàëîá è ïğåäëîæåíèé
 insert into complaints_suggestions (id, booking_room_id, description, on_date)
-values (seq_complaints_suggestions_id.nextval, 1, 'Ğ’ Ğ½Ğ¾Ğ¼ĞµÑ€Ğµ Ğ½Ğµ Ğ±Ñ‹Ğ»Ğ¾ Ğ¿Ğ¾Ğ´Ğ°Ñ‡Ğ¸ Ñ…Ğ¾Ğ»Ğ¾Ğ´Ğ½Ğ¾Ğ¹ Ğ²Ğ¾Ğ´Ñ‹', to_date('16-06-2023', 'dd-mm-yyyy'));
+values (seq_complaints_suggestions_id.nextval, 1, 'Â íîìåğå íå áûëî ïîäà÷è õîëîäíîé âîäû', to_date('31-05-2023', 'dd-mm-yyyy'));
 
--- ÑƒÑĞ»ÑƒĞ³Ğ° Ğ½Ğ¾Ğ¼ĞµÑ€ 
+-- -----------------------------
 
-insert into ordering_service (id, on_date, guest_id, services_id, payment_status)
-values (seq_ordering_service_id.nextval, to_date('16-06-2023', 'dd-mm-yyyy') ,(select id from guest where lower(last_name) like 'Ñ‡ĞµÑ€ĞµĞ²Ğ°Ñ‚Ñ‹Ğ¹'), 
-        (select id from list_services where lower(name_services) like 'Ğ±Ğ¸Ğ»ÑŒÑÑ€Ğ´'), 'Ğ½Ğµ Ğ¾Ğ¿Ğ»Ğ°Ñ‡ĞµĞ½Ğ¾');
-        
+/*1) Ïîëó÷èòü ïåğå÷åíü è îáùåå ÷èñëî ôèğì, çàáğîíèğîâàâøèõ ìåñòà â îáúåìå, íå ìåíåå óêàçàííîãî, 
+çà âåñü ïåğèîä ñîòğóäíè÷åñòâà, ëèáî çà íåêîòîğûé ïåğèîä*/
+-- Âpzkf ïåğèîä ñ 01-06 ïî 15-06-2023
+
+select bo.id,c.name_company, sum(bo.number_rooms)
+from booking_order bo join company c on bo.company_id = c.id
+where bo.booking_date between to_date('01-06-2023', 'dd-mm-yyyy') 
+and to_date('15-06-2023', 'dd-mm-yyyy')
+and bo.company_id is not null
+group by bo.id,c.name_company
+having sum(bo.number_rooms) > 4;
+
+--2.Ïîëó÷èòü ïåğå÷åíü è îáùåå ÷èñëî ïîñòîÿëüöåâ, 
+-- çàñåëÿâøèõñÿ â íîìåğà ñ óêàçàííûìè õàğàêòåğèñòèêàìè çà íåêîòîğûé ïåğèîä. 
+
+select bo.company_id, bo.building_id,bo.hotel_class_stars, sum(bo.number_people)
+from booking_order bo 
+where bo.arrival_date >= to_date('01-06-2023', 'dd-mm-yyyy')
+and bo.departure_date <= to_date('30-06-2023', 'dd-mm-yyyy')
+and bo.order_processing_status like 'ïğèíÿò'
+group by bo.company_id,  bo.building_id, bo.hotel_class_stars;
+
+
+-- 8.	Ïîëó÷èòü ñâåäåíèÿ î ôèğìàõ, ñ êîòîğûìè çàêëş÷åíû äîãîâîğà î áğîíè 
+--      íà óêàçàííûé ïåğèîä
+select c.id, c.name_company, c.fname_contact_person, c.contract_status, c.discription_activity, c.sale
+from company c join booking_order bo 
+                on c.id = bo.company_id
+where bo.arrival_date >= to_date('01-06-2023', 'dd-mm-yyyy')
+and bo.departure_date <= to_date('30-06-2023', 'dd-mm-yyyy')
+and bo.order_processing_status like 'ïğèíÿò';
+-- ----------------------------------------
+drop table statistics;
+drop table ordering_service; 
+drop table complaints_suggestions;
+drop table booking_room;
+drop table booking_order;
+drop table guest;
+drop table company;
+drop table building_service;
+drop table list_services;
+drop table building_room;
+drop table building;
+drop table price_room;
+drop table hotel_class;
+
+drop sequence seq_company_id;
+drop sequence seq_guest_id;
+drop sequence seq_booking_order_id;
+drop sequence seq_building_room_id;
+drop sequence seq_ordering_service_id;
+drop sequence seq_booking_room_id;
+drop sequence seq_complaints_suggestions_id;
+
+drop view current_b_ord_id;
+drop view processing_filter_limits;
+drop view free_rooms_order_dates;
+drop view building_view_for_id;
