@@ -1,5 +1,7 @@
 <body>
     <script>
+        'use strict'
+
         let number = Number(prompt());
 
         function factorial(n) {
@@ -20,10 +22,10 @@
         }
 
         if (number % 2 === 0) {
-            document.write(factorial(number));
+            document.write(`${number}! = ${factorial(number)}`);
         } 
         else {
-            document.write(average(number));
+            document.write(`Среднее арифметическое от 1 до ${number} = ${average(number)}`);
         }
     </script>
 </body>

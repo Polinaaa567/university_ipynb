@@ -22,5 +22,7 @@
         "city": "Нижний Новгород",
         "num_house": 2, 
         "num_apartment": 16
-    }
+    }, 
+    
+    "study_period": 9
 }

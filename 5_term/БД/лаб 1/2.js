@@ -1,3 +1,5 @@
+'use strict'
+
 let div = document.getElementById('div');
 
 let schedule = [{time: '8.00 - 9.35', subject: ' ', teacher: ' ', auditorium: ''},
