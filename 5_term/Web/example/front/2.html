@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Main</title>
+    </head>
+    
+    <body>
+        <header>
+            <h1>Привет, <span id='login'></span>!</h1>
+        </header>
+        
+        <script >
+            class LoginGet{
+                login_get() {
+                    this.login = localStorage.getItem('login');
+
+                    document.getElementById('login').innerHTML = this.login;
+                }
+            }
+
+            let login = new LoginGet();
+            login.login_get();
+            
+        </script>
+    </body> 
+</html>

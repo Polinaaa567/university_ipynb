@@ -1,0 +1,114 @@
+<head> 
+    <title>Регистрация</title>
+    <meta charset="utf-8">  
+
+    <style>
+        body {
+            font-family:'Freestyle Script', serif;
+            border: 10px solid rgb(231, 63, 172);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 100px 10px;
+            font-size: 100px;
+            color: rgb(231, 63, 172);
+            text-shadow: 0px 0px 5px rgb(72, 20, 71);
+        }
+
+        h2{
+            margin: 0px 10px;
+            font-size: 80px;
+            color: rgb(231, 63, 172);
+            text-shadow: 0px 0px 5px rgb(72, 20, 71);
+        }
+
+        #picture{
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid rgb(231, 63, 172);
+            box-shadow: 0 0 10px rgb(72, 20, 71);
+            cursor: pointer;
+        }
+
+        .container, .login, .next{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            text-align: center;
+        }
+
+        #login{
+            width: 300px;
+            height: 50px;
+            font-size: 50px;
+            padding: 10px;
+            font-family:'Freestyle Script', serif;
+            border: 5px solid rgb(72, 20, 71);
+            border-radius: 10px;
+            background-color: rgb(247, 185, 224);
+        }
+
+        #next{
+            margin: 100px;
+            width: 200px;
+            height: 80px;
+            font-size: 50px;
+            padding: 10px;
+            font-family:'Freestyle Script', serif;
+            font-weight: bold;
+            border: 5px solid rgb(72, 20, 71);
+            border-radius: 10px;
+            background-color: rgb(247, 185, 224);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Registration</h1>
+        <img src="./1111.jpg" id="picture">
+    </div>
+
+    <div class="login">
+        <h2>Login</h2>
+        <input type="text" id="login">
+    </div>
+
+    <div class="next">
+        <button id="next">NEXT</button>
+    </div>
+
+    <script>
+        'use strict'
+        
+        class Registration{
+            constructor(){
+                this.buttonNext = document.getElementById('next');
+                this.inputLogin = document.getElementById('login');
+            }
+
+            async saveRegistration(login){
+                localStorage.setItem('login', login);
+            }
+
+            async addEventListener() {
+                this.buttonNext.addEventListener('click', async(event) =>{
+                    event.preventDefault();
+                    let login = this.inputLogin.value.trim();
+                    if(login === '') {
+                        alert('Login is empty');
+                    } else {
+                        await this.saveRegistration(login);
+                        window.location.href='./2.html';
+                    }
+                });
+            }
+        }
+
+        let registration = new Registration();
+        registration.addEventListener();
+    </script>
+</body>
