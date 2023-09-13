@@ -1,11 +1,13 @@
 <html>
     <head>
         <title>Main</title>
+        <meta charset="utf-8"> 
     </head>
     
     <body>
         <header>
             <h1>Привет, <span id='login'></span>!</h1>
+            <div id="resultContainer"></div>
         </header>
         
         <script >
@@ -14,17 +16,17 @@
                     this.login = localStorage.getItem('login');
 
                     document.getElementById('login').innerHTML = this.login;
+
+                    this.data = localStorage.getItem('data');
+        
+                    document.getElementById('resultContainer').textContent = this.data;
                 }
             }
 
-            // class fetch{
-            //     sendReq() {
-                    
-            //     }
-            // }
-
-            let login = new LoginGet();
-            login.login_get();
+            ldocument.addEventListener("DOMContentLoaded", function () {
+                let login = new LoginGet();
+                login.login_get();
+            });
             
         </script>
     </body> 
