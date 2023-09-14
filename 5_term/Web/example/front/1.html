@@ -101,7 +101,8 @@
                                 'Content-Type': 'application/json'
                             }
                         })
-                        .then(response => response.text())
+                        .then(response => {response.text()
+                        console.log(response.text())})
                         .then(data => {
                             localStorage.setItem('data', data);
                             window.location.href='./2.html';
