@@ -61,7 +61,7 @@
             calcButton.addEventListener("click", async () => {
                 calcButton.setAttribute('disabled','');
                 console.log(calc());
-                calcH2.innerHTML = calc();
+                calcH2.innerHTML = await calc();
                 calcButton.removeAttribute('disabled');
             });
         }
@@ -70,11 +70,11 @@
             let response = await fetch(`http://localhost:90/registration?username=${username}&password=${password}`);
             let content = await response.text();
            
-            return content === 'LOGON';
+            return content === 'OK';
         }
 
         async function calc() {
-            let response = await fetch(`http://localhost:/calcGet`);
+            let response = await fetch(`http://localhost:90/calcGet?`);
             let content = await response.text();
            console.log(content);
             return content;

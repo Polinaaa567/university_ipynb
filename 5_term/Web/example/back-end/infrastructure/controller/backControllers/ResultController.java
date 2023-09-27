@@ -5,7 +5,7 @@ import app.CalcService;
 public class ResultController {
     private CalcService calcService = new CalcService();
 
-    int a = 2, b = 2;
+    private int a = 2, b = 2;
 
     public String send() {
         System.out.println("Обработка метода send, должен отправлять результат вычислений");
