@@ -1,0 +1,92 @@
+<head> 
+    <title>Регистрация</title>
+    <meta charset="utf-8">  
+    <script src="start.js"></script>
+    <style>
+  
+        body {
+            font-family:'Freestyle Script', serif;
+            border: 10px solid rgb(231, 63, 172);
+        }
+  
+        h1 {
+            text-align: center;
+            margin: 100px 10px;
+            font-size: 100px;
+            color: rgb(231, 63, 172);
+            text-shadow: 0px 0px 5px rgb(72, 20, 71);
+        }
+  
+        h2{
+            margin: 0px 10px;
+            font-size: 80px;
+            color: rgb(231, 63, 172);
+            text-shadow: 0px 0px 5px rgb(72, 20, 71);
+        }
+  
+        .container, .login, .next, #calcF{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            text-align: center;
+        }
+  
+        .appendButton {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            text-align: center;
+        }
+        .tableCalc {
+            flex-direction: column;
+            margin: auto;
+            text-align: center;
+        }
+        #login, #password{
+            width: 300px;
+            height: 50px;
+            font-size: 50px;
+            padding: 10px;
+            font-family:'Freestyle Script', serif;
+            border: 5px solid rgb(72, 20, 71);
+            border-radius: 10px;
+            background-color: rgb(247, 185, 224);
+        }
+  
+        #next, #calcButton{
+            margin: 100px;
+            width: 200px;
+            height: 80px;
+            font-size: 50px;
+            padding: 10px;
+            font-family:'Freestyle Script', serif;
+            font-weight: bold;
+            border: 5px solid rgb(72, 20, 71);
+            border-radius: 10px;
+            background-color: rgb(247, 185, 224);
+            cursor: pointer;
+        }
+    </style>
+  </head>
+  
+  <body>
+    <div class="container">
+        <h1>Registration</h1>
+  
+    </div>
+  
+    <div class="login">
+        <h2>Login</h2>
+        <input type="text" id="login">
+        <h2>Password</h2>
+        <input type="text" id="password">
+        
+    </div>
+  
+    <div class="next">
+        <button id="next">NEXT</button>
+    </div>
+  
+  
+  </body>
