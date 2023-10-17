@@ -1,38 +1,3 @@
-// window.onload = function() {   
-//    console.log("Starting...");
-//    test();  
-// }
-
-
-// async function act(title,root,path,payload) {
-//     console.log(title);   
-//     try {
-//      let response = await fetch(root+path,payload);
-//      let responseText = await response.text();
-     
-//      console.log('OK: ' + response.ok);   
-//      console.log('Code: ' + response.status);        
-//      console.log('Body: ' + responseText);
-//     }
-//     catch (error) {
-//       console.log('Fatal error: ' + error);
-//     }
-// }
-
-
-
-// async function test() {   
-//    let root = 'http://localhost:9090/iks/api/v1';
-    
-//    await act('1. Ping:',  root, '/', {method: 'GET'});
-
-//    await act('2. Hello:', root, '/calculation?filter=true&id=2', {method: 'GET'}); 
-
-//    await act('3. Data:',  root, '/data', { method: 'GET'}
-//    );   
-// }
-
-
 'use strict'
 let log = false;
 let username;
@@ -43,8 +8,7 @@ function loginMain() {
     let inputLogin = document.getElementById('login');
     let inputPassword = document.getElementById('password');
 
-    FunkaddEventListener(inputLogin, buttonNext, inputPassword);
-            
+    FunkaddEventListener(inputLogin, buttonNext, inputPassword);     
 }
 
 async function FunkaddEventListener(inputLogin, buttonNext, inputPassword) {
@@ -75,40 +39,8 @@ async function FunkaddEventListener(inputLogin, buttonNext, inputPassword) {
 
 function MainWindow() {
     document.body.innerHTML = '';
-
-            // let calcF = document.createElement('div');
-            // calcF.setAttribute('id', 'calcF');
-            // let calclabel = document.createElement('h1');
-            // calclabel.innerHTML = 'Calculation';
-
-            // let performButton = document.createElement('input');
-            // performButton.setAttribute('type', 'button');
-            // performButton.setAttribute('value', 'Результат');
-            // performButton.setAttribute('id', 'perforbutton');
-            
-            // let calcH2 = document.createElement('h2');
-            // calcF.append(calclabel, performButton, calcH2);
-            // document.body.appendChild(calcF);
-            
     document.body.appendChild(createTable());
 }
-
-        // function FuncCalcButton(performButton, calcH2) {
-        //     performButton.addEventListener("click", async () => {
-        //         performButton.setAttribute('disabled','');
-                
-        //         calcH2.innerHTML = await calc();
-        //         performButton.removeAttribute('disabled');
-        //     });
-        // }
-        //   function FuncCalcButton(buttonPerfom, labelResult) {
-        //     buttonPerfom.addEventListener("click", async () => {
-    
-        //         buttonPerfom.setAttribute('disabled','');
-        //         labelResult.innerHTML = await calc();
-        //         buttonPerfom.removeAttribute('disabled');
-        //     });
-        // }
         
 async function loginfetch(username, password) {
     let response = await fetch(`http://localhost:8080/example/api/authentication?username=${username}&password=${password}`, {method: 'GET'});
@@ -201,11 +133,16 @@ const createTable = () => {
         let sum;
 
         buttonPerfom.addEventListener("click", async () => {
-            buttonPerfom.setAttribute('disabled','');
-            sum = await calc(inputA.value, inputB.value);
-            buttonPerfom.removeAttribute('disabled');
-            labelStatus.innerHTML = 'Выполняется';
-            labelResult.innerHTML = '';
+            if(!inputA.value || !inputB.value || isNaN(inputA.value) || isNaN(inputB.value)){
+                alert("Please enter a number");
+            }
+            else{
+                buttonPerfom.setAttribute('disabled','');
+                sum = await calc(inputA.value, inputB.value);
+                buttonPerfom.removeAttribute('disabled');
+                labelStatus.innerHTML = 'Выполняется';
+                labelResult.innerHTML = '';
+            }
         });
 
         refreshButton.addEventListener('click', async() => {
