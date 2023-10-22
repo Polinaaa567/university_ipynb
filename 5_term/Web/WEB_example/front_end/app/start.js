@@ -3,6 +3,7 @@ let log = false;
 let username;
 
 
+// Авторизация 
 function loginMain() {
     let buttonNext = document.getElementById('next');
     let inputLogin = document.getElementById('login');
@@ -11,6 +12,7 @@ function loginMain() {
     FunkaddEventListener(inputLogin, buttonNext, inputPassword);     
 }
 
+// Авторизация 
 async function FunkaddEventListener(inputLogin, buttonNext, inputPassword) {
     buttonNext.addEventListener('click', async() =>{
         let login = inputLogin.value;
@@ -37,11 +39,13 @@ async function FunkaddEventListener(inputLogin, buttonNext, inputPassword) {
     });
 }
 
+// Список задач
 function MainWindow() {
     document.body.innerHTML = '';
     document.body.appendChild(createTable());
 }
-        
+ 
+// Авторизация 
 async function loginfetch(username, password) {
     let response = await fetch(`http://localhost:8080/example/api/authentication?username=${username}&password=${password}`, {method: 'GET'});
     let content = await response.text();
@@ -49,6 +53,7 @@ async function loginfetch(username, password) {
     return content === 'ok';
 }
 
+// Список задач
 async function calc(A, B) {            
     let response = await fetch(`http://localhost:8080/example/api/calculation?a=${A}&b=${B}`, {method: 'GET'});
     let content = await response.text();
