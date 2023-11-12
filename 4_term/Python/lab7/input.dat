@@ -1,1 +1,0 @@
-g++ -c ./source/client/client.cpp -o ./build/client/main.o
