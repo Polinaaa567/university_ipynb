@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 	begin = MPI_Wtime();
 
 	for (int i = 0; i < pow(10, j); i++)
-		summ += 1/(1 + i);
+		summ += (float)1/(1 + i);
 
 	end = MPI_Wtime();
 

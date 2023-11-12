@@ -7,8 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	int rank, size;
-    int n;
+	int rank, size, n;
 
 	MPI_Init(&argc, &argv);
 

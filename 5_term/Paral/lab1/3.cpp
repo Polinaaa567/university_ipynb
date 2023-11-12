@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     MPI_Init(&argc, &argv);
 
-    printf("Timer = %14lf \n", MPI_Wtick());
+    printf("Timer = %f ", MPI_Wtick());
     
     MPI_Finalize();
     return 0;
